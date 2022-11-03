@@ -12,4 +12,11 @@
     <color name="main_blue">#007AFF</color>
     <color name="bt_plus_background">#D5EEFF</color>
     <color name="bt_plus">#005689</color>
+    <color name="gray_0">#f3f3f3</color>
+    <color name="gray_1">#dddce1</color>
+    <color name="gray_2">#afafb7</color>
+    <color name="gray_3">#74757e</color>
+    <color name="gray_4">#424247</color>
+    <color name="gray_5">#212225</color>
+    <color name="white2">#FFFFFF</color>
 </resources>
