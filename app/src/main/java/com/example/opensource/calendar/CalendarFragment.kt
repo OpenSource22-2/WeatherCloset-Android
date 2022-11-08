@@ -1,34 +1,25 @@
 package com.example.opensource.calendar
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.opensource.MainActivity
 import com.example.opensource.R
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CalendarFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var widget: MaterialCalendarView
+    private lateinit var userDailyRecord: View
+    private var dateList = arrayListOf<CalendarDay>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,23 +29,45 @@ class CalendarFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_calendar, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CalendarFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        userDailyRecord = view!!.findViewById(R.id.userDailyRecord)
+        widget = view!!.findViewById(R.id.calendarView)
+
+        setCalendarView()
+    }
+
+    private fun setCalendarView(){
+
+        var activity =  getActivity() as MainActivity
+
+        // [미구현] 기록을 받아오는 코드
+        dateList.add(CalendarDay.from(2022, 11, 11))
+        dateList.add(CalendarDay.from(2022, 11, 23))
+        dateList.add(CalendarDay.from(2022, 12, 1))
+
+        // 추가된 기록을 받아와 달력에 표시
+        widget.addDecorators(EventDecorator(dateList, activity))
+
+        // 특정 날짜를 선택한 경우 이벤트 처리
+        widget.setOnDateChangedListener(object: OnDateSelectedListener {
+            override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
+                // 기록이 존재하는 경우, 유저 기록을 화면에 출력
+                if(dateList.contains(date)) {
+                    userDailyRecord.setVisibility(View.VISIBLE)
+                }
+                else {
+                    userDailyRecord.setVisibility(View.INVISIBLE)
                 }
             }
+        })
+
+        // 선택한 달이 바뀌는 경우 유저 기록 화면 숨기기
+        widget.setOnMonthChangedListener(object: OnMonthChangedListener {
+            override fun onMonthChanged(widget: MaterialCalendarView?, date: CalendarDay?) {
+                userDailyRecord.setVisibility(View.INVISIBLE)
+            }
+        })
     }
 }

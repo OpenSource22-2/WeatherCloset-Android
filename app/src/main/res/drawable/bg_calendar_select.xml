@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/bt_plus"></solid>
+            <size
+                android:width="20dp"
+                android:height="20dp">
+            </size>
+        </shape>
+    </item>
+
+    <item
+        android:width="13dp"
+        android:height="13dp"
+        android:bottom="3dp"
+        android:drawable="@drawable/ic_star"
+        android:gravity="bottom|center">
+    </item>
+
+</layer-list>
