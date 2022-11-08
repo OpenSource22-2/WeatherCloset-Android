@@ -19,4 +19,8 @@
     <color name="gray_4">#424247</color>
     <color name="gray_5">#212225</color>
     <color name="white2">#FFFFFF</color>
+    <color name="text_gray">#272b30</color>
+
+    <color name="chip_unselected">#E1F1FE</color>
+    <color name="chip_selected">#002171</color>
 </resources>

@@ -6,7 +6,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,20 +13,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import androidx.core.content.FileProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.bumptech.glide.Glide
 import com.example.opensource.R
 import com.example.opensource.databinding.FragmentSaveBinding
-import com.example.opensource.home.SetImageActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,14 +37,14 @@ class SaveFragment : BottomSheetDialogFragment() {
 
     var imgFrom = 0 // 이미지 어디서 가져왔는지 (카메라 or 갤러리)
     private var imagePath = ""
+    private lateinit var selectedChipList: Array<Boolean>
+    private var chipClickableState = false
 
     @SuppressLint("SimpleDateFormat")
     var imageDate: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
     private lateinit var intent: Intent
 
-    private lateinit var btnCamera: Button
     private lateinit var ivGallery: ImageView
-    private lateinit var btnMove: Button
     private lateinit var btnUpload: Button
     private lateinit var mProgressDialog: ProgressDialog
     private lateinit var imageFile: File // 카메라 선택 시 새로 생성하는 파일 객체
@@ -70,16 +66,13 @@ class SaveFragment : BottomSheetDialogFragment() {
 
         binding = FragmentSaveBinding.inflate(inflater, container, false)
 
-        btnCamera = binding.btnCamera
         ivGallery = binding.ivGallery
-        btnMove = binding.btnMove
         btnUpload = binding.btnUpload
 
         initProgressDialog()
-        clickBtnCamera()
         clickIvGallery()
-        clickBtnMove()
         clickBtnUpload()
+        clickChip()
 
         return binding.root
     }
@@ -92,31 +85,11 @@ class SaveFragment : BottomSheetDialogFragment() {
             isDraggable = false
         }
         binding.clDialog.layoutParams.height =
-            (resources.displayMetrics.heightPixels * 0.90).toInt()
+            (resources.displayMetrics.heightPixels * 0.94).toInt()
     }
 
     override fun getTheme(): Int {
         return R.style.AppBottomSheetDialogTheme
-    }
-
-    private fun clickBtnCamera() {
-        btnCamera.setOnClickListener {
-            intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(requireActivity().packageManager) != null) {
-                try {
-                    imageFile = createImageFile()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                val imageUri = FileProvider.getUriForFile(
-                    getApplicationContext(),
-                    requireContext().packageName,
-                    imageFile
-                )
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-                startActivityForResult(intent, CAMERA)
-            }
-        }
     }
 
     private fun clickIvGallery() {
@@ -128,17 +101,42 @@ class SaveFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun clickBtnMove() {
-        btnMove.setOnClickListener {
-            intent = Intent(requireActivity(), SetImageActivity::class.java)
-            intent.putExtra("path", imagePath)
-            startActivity(intent)
+    private fun countSelectedChips(): Int {
+        var cnt = 0
+        for (i in 0..9) {
+            if (selectedChipList[i]) ++cnt
         }
+        return cnt
+    }
+
+    private fun setChipList(chip: Chip, pos: Int) {
+        val cnt = countSelectedChips()
+        if (cnt == 3 && chip.isChecked)
+            chip.isChecked = false
+        else selectedChipList[pos] = chip.isChecked
+    }
+
+    private fun clickChip() {
+        selectedChipList = Array(10) { false }
+        binding.chip1.setOnClickListener { setChipList(binding.chip1, 0) }
+        binding.chip2.setOnClickListener { setChipList(binding.chip2, 1) }
+        binding.chip3.setOnClickListener { setChipList(binding.chip3, 2) }
+        binding.chip4.setOnClickListener { setChipList(binding.chip4, 3) }
+        binding.chip5.setOnClickListener { setChipList(binding.chip5, 4) }
+        binding.chip6.setOnClickListener { setChipList(binding.chip6, 5) }
+        binding.chip7.setOnClickListener { setChipList(binding.chip7, 6) }
+        binding.chip8.setOnClickListener { setChipList(binding.chip8, 7) }
+        binding.chip9.setOnClickListener { setChipList(binding.chip9, 8) }
+        binding.chip10.setOnClickListener { setChipList(binding.chip10, 9) }
     }
 
     private fun clickBtnUpload() {
         btnUpload.setOnClickListener {
-            if (imagePath.isNotEmpty() && imgFrom >= 100)
+            if (imagePath.isNotEmpty() && imgFrom >= 100
+                && binding.etMemo.text?.isNotEmpty() == true
+                && binding.rbStar.rating > 0
+                && countSelectedChips() > 0
+            )
                 uploadImg()
         }
     }
@@ -166,23 +164,6 @@ class SaveFragment : BottomSheetDialogFragment() {
                 ivGallery.setPadding(0, 0, 0, 0)
             }
         }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    @Throws(IOException::class)
-    fun createImageFile(): File {
-        // 이미지 파일 생성
-        val timeStamp = imageDate.format(Date()) // 파일명 중복을 피하기 위한 "yyyyMMdd_HHmmss"꼴의 timeStamp
-        val fileName = "IMAGE_$timeStamp" // 이미지 파일 명
-        val storageDir: File? =
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val file = File.createTempFile(
-            fileName,
-            ".jpg",
-            storageDir
-        ) // 이미지 파일 생성
-        imagePath = file.absolutePath // 파일 절대경로 저장하기
-        return file
     }
 
     private fun uploadImg() {
@@ -226,11 +207,6 @@ class SaveFragment : BottomSheetDialogFragment() {
         reference.downloadUrl.addOnSuccessListener { uri -> // uri 다운로드 성공 시 동작
             // 다운받은 uri를 인텐트에 넣어 다른 액티비티로 이동
             Log.d(TAG, "onSuccess: download uri: $uri")
-            /* setImageActivity로 점검
-            intent = Intent(requireActivity(), SetImageActivity::class.java)
-            intent.putExtra("path", uri.toString()) // 다운로드한 uri, String 형으로 바꿔 인텐트에 넣기
-            startActivity(intent)
-            */
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
         }
