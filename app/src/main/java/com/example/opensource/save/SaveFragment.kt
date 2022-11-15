@@ -44,7 +44,6 @@ class SaveFragment : BottomSheetDialogFragment() {
     var imgFrom = 0 // 이미지 어디서 가져왔는지 (카메라 or 갤러리)
     private var imagePath = ""
     private lateinit var selectedChipList: Array<Boolean>
-    private var chipClickableState = false
 
     @SuppressLint("SimpleDateFormat")
     var imageDate: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -57,6 +56,8 @@ class SaveFragment : BottomSheetDialogFragment() {
     private lateinit var imageUri: Uri
     var storage = FirebaseStorage.getInstance() // 파이어베이스 저장소 객체
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
+
+    private var heartState: Boolean = false
 
     private lateinit var binding: FragmentSaveBinding
 
@@ -78,6 +79,7 @@ class SaveFragment : BottomSheetDialogFragment() {
         initProgressDialog()
         clickIvGallery()
         clickBtnUpload()
+        clickHeart()
         clickChip()
 
         return binding.root
@@ -104,6 +106,18 @@ class SaveFragment : BottomSheetDialogFragment() {
             intent.type = MediaStore.Images.Media.CONTENT_TYPE
             intent.type = "image/*"
             startActivityForResult(intent, GALLERY)
+        }
+    }
+
+    private fun clickHeart() {
+        binding.ivHeart.setOnClickListener {
+            heartState = if (heartState) {
+                binding.ivHeart.setImageResource(R.drawable.heart_empty)
+                false
+            } else {
+                binding.ivHeart.setImageResource(R.drawable.heart_full)
+                true
+            }
         }
     }
 
@@ -169,6 +183,8 @@ class SaveFragment : BottomSheetDialogFragment() {
                 ivGallery.setBackgroundResource(R.color.white)
                 ivGallery.setPadding(0, 0, 0, 0)
             }
+            // 좋아요 이미지 visible로 변경
+            binding.ivHeart.visibility = View.VISIBLE
         }
     }
 
@@ -187,12 +203,12 @@ class SaveFragment : BottomSheetDialogFragment() {
                     .child(imageFileName) // 이미지 파일 경로 지정 (/item/imageFileName)
                 uploadTask = reference.putFile(imageUri) // 업로드할 파일과 업로드할 위치 설정
             }
-            CAMERA -> {
-                /*카메라 선택 시 생성했던 이미지파일명으로 reference 에 경로 세팅,
-                 * uploadTask 에서 생성한 이미지파일을 업로드하기로 설정*/reference = storage.reference.child("item")
-                    .child(imageFile.name) // imageFile.toString()을 할 경우 해당 파일의 경로 자체가 불러와짐
-                uploadTask = reference.putFile(Uri.fromFile(imageFile)) // 업로드할 파일과 업로드할 위치 설정
-            }
+//            CAMERA -> {
+//                /*카메라 선택 시 생성했던 이미지파일명으로 reference 에 경로 세팅,
+//                 * uploadTask 에서 생성한 이미지파일을 업로드하기로 설정*/reference = storage.reference.child("item")
+//                    .child(imageFile.name) // imageFile.toString()을 할 경우 해당 파일의 경로 자체가 불러와짐
+//                uploadTask = reference.putFile(Uri.fromFile(imageFile)) // 업로드할 파일과 업로드할 위치 설정
+//            }
         }
 
         // 파일 업로드 시작
@@ -241,12 +257,13 @@ class SaveFragment : BottomSheetDialogFragment() {
     private fun saveRecord() {
         // testdata
         val requestRecordData = CreateRecordRequest(
-            comment = binding.etMemo.toString(),
-            heart = true,   // TODO: heart ui 추가
-            imageUrl = reference.downloadUrl.toString(),
+            comment = binding.etMemo.text.toString(),
+            heart = heartState,   // TODO: heart ui 추가
+            imageUrl = imageUri.toString(),
             stars = binding.rbStar.rating.toInt()
         )
 
+        Log.d(TAG, "saveRecord: imageUri: $imageUri")
         val call: Call<CreateRecordResponse> =
             RetrofitObject.provideWeatherClosetApi.createRecord(requestRecordData)
 
