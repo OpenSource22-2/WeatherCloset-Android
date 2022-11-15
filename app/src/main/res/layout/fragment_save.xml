@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="-5dp"
         android:layout_marginTop="5dp"
+        android:stepSize="1"
         android:progressTint="@color/chip_unselected"
         android:secondaryProgressTint="@color/chip_unselected"
         app:layout_constraintStart_toStartOf="@id/tv_star"

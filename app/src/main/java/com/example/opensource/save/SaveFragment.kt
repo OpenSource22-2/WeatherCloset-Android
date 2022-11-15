@@ -15,6 +15,9 @@ import android.widget.Button
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.opensource.R
+import com.example.opensource.data.RetrofitObject
+import com.example.opensource.data.remote.CreateRecordRequest
+import com.example.opensource.data.remote.CreateRecordResponse
 import com.example.opensource.databinding.FragmentSaveBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -23,6 +26,9 @@ import com.google.android.material.chip.Chip
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -195,6 +201,7 @@ class SaveFragment : BottomSheetDialogFragment() {
             hideProgressDialog()
             Log.d(TAG, "onSuccess: upload")
             downloadUri() // 업로드 성공 시 업로드한 파일 Uri 다운받기
+            saveRecord()    // data 전송
         }.addOnFailureListener { // 업로드 실패 시 동작
             hideProgressDialog()
             Log.d(TAG, "onFailure: upload")
@@ -228,5 +235,38 @@ class SaveFragment : BottomSheetDialogFragment() {
         if (mProgressDialog.isShowing) {
             mProgressDialog.dismiss()
         }
+    }
+
+    // 서버에 데이터 전송(POST)
+    private fun saveRecord() {
+        // testdata
+        val requestRecordData = CreateRecordRequest(
+            comment = binding.etMemo.toString(),
+            heart = true,   // TODO: heart ui 추가
+            imageUrl = reference.downloadUrl.toString(),
+            stars = binding.rbStar.rating.toInt()
+        )
+
+        val call: Call<CreateRecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.createRecord(requestRecordData)
+
+        call.enqueue(object : Callback<CreateRecordResponse> {
+            override fun onResponse(
+                call: Call<CreateRecordResponse>,
+                response: Response<CreateRecordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    Log.d(TAG, "onResponse: success : $data")
+                } else {
+                    Log.e(TAG, "onResponse: $response")
+                    Log.e(TAG, "onResponse: fail: response error")
+                }
+            }
+
+            override fun onFailure(call: Call<CreateRecordResponse>, t: Throwable) {
+                Log.e(TAG, "onFailure: $t")
+            }
+        })
     }
 }
