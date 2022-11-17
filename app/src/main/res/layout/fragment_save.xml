@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+
     <ImageView
         android:id="@+id/iv_gallery"
         android:layout_width="240dp"
@@ -17,6 +18,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_heart"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="20dp"
+        android:visibility="gone"
+        android:src="@drawable/heart_empty"
+        app:layout_constraintEnd_toEndOf="@id/iv_gallery"
+        app:layout_constraintTop_toTopOf="@id/iv_gallery" />
 
     <!-- 오늘 날씨에 내 룩은? -->
     <TextView
@@ -40,6 +51,7 @@
         android:layout_marginTop="5dp"
         android:progressTint="@color/chip_unselected"
         android:secondaryProgressTint="@color/chip_unselected"
+        android:stepSize="1"
         app:layout_constraintStart_toStartOf="@id/tv_star"
         app:layout_constraintTop_toBottomOf="@id/tv_star" />
 
@@ -227,8 +239,8 @@
         android:background="@color/chip_selected"
         android:paddingVertical="15dp"
         android:text="저장"
-        android:textSize="13sp"
         android:textColor="@color/white"
+        android:textSize="13sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

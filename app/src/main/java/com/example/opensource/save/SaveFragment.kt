@@ -15,6 +15,9 @@ import android.widget.Button
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.opensource.R
+import com.example.opensource.data.RetrofitObject
+import com.example.opensource.data.remote.CreateRecordRequest
+import com.example.opensource.data.remote.CreateRecordResponse
 import com.example.opensource.databinding.FragmentSaveBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -23,22 +26,23 @@ import com.google.android.material.chip.Chip
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import java.io.File
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SaveFragment : BottomSheetDialogFragment() {
 
     companion object {
-        private const val CAMERA = 100  // 카메라 선택시 인텐트로 보내는 값
         private const val GALLERY = 101 // 갤러리 선택 시 인텐트로 보내는 값
         private const val TAG = "SAVE_FRAGMENT"
     }
 
     var imgFrom = 0 // 이미지 어디서 가져왔는지 (카메라 or 갤러리)
     private var imagePath = ""
+    private var postUri = ""
     private lateinit var selectedChipList: Array<Boolean>
-    private var chipClickableState = false
 
     @SuppressLint("SimpleDateFormat")
     var imageDate: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -47,10 +51,11 @@ class SaveFragment : BottomSheetDialogFragment() {
     private lateinit var ivGallery: ImageView
     private lateinit var btnUpload: Button
     private lateinit var mProgressDialog: ProgressDialog
-    private lateinit var imageFile: File // 카메라 선택 시 새로 생성하는 파일 객체
     private lateinit var imageUri: Uri
     var storage = FirebaseStorage.getInstance() // 파이어베이스 저장소 객체
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
+
+    private var heartState: Boolean = false
 
     private lateinit var binding: FragmentSaveBinding
 
@@ -72,6 +77,7 @@ class SaveFragment : BottomSheetDialogFragment() {
         initProgressDialog()
         clickIvGallery()
         clickBtnUpload()
+        clickHeart()
         clickChip()
 
         return binding.root
@@ -98,6 +104,18 @@ class SaveFragment : BottomSheetDialogFragment() {
             intent.type = MediaStore.Images.Media.CONTENT_TYPE
             intent.type = "image/*"
             startActivityForResult(intent, GALLERY)
+        }
+    }
+
+    private fun clickHeart() {
+        binding.ivHeart.setOnClickListener {
+            heartState = if (heartState) {
+                binding.ivHeart.setImageResource(R.drawable.heart_empty)
+                false
+            } else {
+                binding.ivHeart.setImageResource(R.drawable.heart_full)
+                true
+            }
         }
     }
 
@@ -163,6 +181,8 @@ class SaveFragment : BottomSheetDialogFragment() {
                 ivGallery.setBackgroundResource(R.color.white)
                 ivGallery.setPadding(0, 0, 0, 0)
             }
+            // 좋아요 이미지 visible로 변경
+            binding.ivHeart.visibility = View.VISIBLE
         }
     }
 
@@ -181,12 +201,12 @@ class SaveFragment : BottomSheetDialogFragment() {
                     .child(imageFileName) // 이미지 파일 경로 지정 (/item/imageFileName)
                 uploadTask = reference.putFile(imageUri) // 업로드할 파일과 업로드할 위치 설정
             }
-            CAMERA -> {
-                /*카메라 선택 시 생성했던 이미지파일명으로 reference 에 경로 세팅,
-                 * uploadTask 에서 생성한 이미지파일을 업로드하기로 설정*/reference = storage.reference.child("item")
-                    .child(imageFile.name) // imageFile.toString()을 할 경우 해당 파일의 경로 자체가 불러와짐
-                uploadTask = reference.putFile(Uri.fromFile(imageFile)) // 업로드할 파일과 업로드할 위치 설정
-            }
+//            CAMERA -> {
+//                /*카메라 선택 시 생성했던 이미지파일명으로 reference 에 경로 세팅,
+//                 * uploadTask 에서 생성한 이미지파일을 업로드하기로 설정*/reference = storage.reference.child("item")
+//                    .child(imageFile.name) // imageFile.toString()을 할 경우 해당 파일의 경로 자체가 불러와짐
+//                uploadTask = reference.putFile(Uri.fromFile(imageFile)) // 업로드할 파일과 업로드할 위치 설정
+//            }
         }
 
         // 파일 업로드 시작
@@ -207,6 +227,8 @@ class SaveFragment : BottomSheetDialogFragment() {
         reference.downloadUrl.addOnSuccessListener { uri -> // uri 다운로드 성공 시 동작
             // 다운받은 uri를 인텐트에 넣어 다른 액티비티로 이동
             Log.d(TAG, "onSuccess: download uri: $uri")
+            postUri = uri.toString()
+            saveRecord()    // data 전송
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
         }
@@ -228,5 +250,39 @@ class SaveFragment : BottomSheetDialogFragment() {
         if (mProgressDialog.isShowing) {
             mProgressDialog.dismiss()
         }
+    }
+
+    // 서버에 데이터 전송(POST)
+    private fun saveRecord() {
+        // testdata
+        val requestRecordData = CreateRecordRequest(
+            comment = binding.etMemo.text.toString(),
+            heart = heartState,
+            imageUrl = postUri,
+            stars = binding.rbStar.rating.toInt()
+        )
+
+        Log.d(TAG, "saveRecord: imageUri: $postUri")
+        val call: Call<CreateRecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.createRecord(requestRecordData)
+
+        call.enqueue(object : Callback<CreateRecordResponse> {
+            override fun onResponse(
+                call: Call<CreateRecordResponse>,
+                response: Response<CreateRecordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    Log.d(TAG, "onResponse: success : $data")
+                } else {
+                    Log.e(TAG, "onResponse: $response")
+                    Log.e(TAG, "onResponse: fail: response error")
+                }
+            }
+
+            override fun onFailure(call: Call<CreateRecordResponse>, t: Throwable) {
+                Log.e(TAG, "onFailure: $t")
+            }
+        })
     }
 }
