@@ -29,20 +29,19 @@ import com.google.firebase.storage.UploadTask
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SaveFragment : BottomSheetDialogFragment() {
 
     companion object {
-        private const val CAMERA = 100  // 카메라 선택시 인텐트로 보내는 값
         private const val GALLERY = 101 // 갤러리 선택 시 인텐트로 보내는 값
         private const val TAG = "SAVE_FRAGMENT"
     }
 
     var imgFrom = 0 // 이미지 어디서 가져왔는지 (카메라 or 갤러리)
     private var imagePath = ""
+    private var postUri = ""
     private lateinit var selectedChipList: Array<Boolean>
 
     @SuppressLint("SimpleDateFormat")
@@ -52,7 +51,6 @@ class SaveFragment : BottomSheetDialogFragment() {
     private lateinit var ivGallery: ImageView
     private lateinit var btnUpload: Button
     private lateinit var mProgressDialog: ProgressDialog
-    private lateinit var imageFile: File // 카메라 선택 시 새로 생성하는 파일 객체
     private lateinit var imageUri: Uri
     var storage = FirebaseStorage.getInstance() // 파이어베이스 저장소 객체
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
@@ -217,7 +215,6 @@ class SaveFragment : BottomSheetDialogFragment() {
             hideProgressDialog()
             Log.d(TAG, "onSuccess: upload")
             downloadUri() // 업로드 성공 시 업로드한 파일 Uri 다운받기
-            saveRecord()    // data 전송
         }.addOnFailureListener { // 업로드 실패 시 동작
             hideProgressDialog()
             Log.d(TAG, "onFailure: upload")
@@ -230,6 +227,8 @@ class SaveFragment : BottomSheetDialogFragment() {
         reference.downloadUrl.addOnSuccessListener { uri -> // uri 다운로드 성공 시 동작
             // 다운받은 uri를 인텐트에 넣어 다른 액티비티로 이동
             Log.d(TAG, "onSuccess: download uri: $uri")
+            postUri = uri.toString()
+            saveRecord()    // data 전송
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
         }
@@ -258,12 +257,12 @@ class SaveFragment : BottomSheetDialogFragment() {
         // testdata
         val requestRecordData = CreateRecordRequest(
             comment = binding.etMemo.text.toString(),
-            heart = heartState,   // TODO: heart ui 추가
-            imageUrl = imageUri.toString(),
+            heart = heartState,
+            imageUrl = postUri,
             stars = binding.rbStar.rating.toInt()
         )
 
-        Log.d(TAG, "saveRecord: imageUri: $imageUri")
+        Log.d(TAG, "saveRecord: imageUri: $postUri")
         val call: Call<CreateRecordResponse> =
             RetrofitObject.provideWeatherClosetApi.createRecord(requestRecordData)
 
