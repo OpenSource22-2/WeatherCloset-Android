@@ -13,7 +13,7 @@
         android:alpha="0.5"
         android:background="@drawable/rectangle_gray_radius_24"
         android:padding="80dp"
-        android:src="@drawable/plus"
+        android:src="@drawable/ic_plus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -40,7 +40,7 @@
         android:backgroundTint="@color/bt_plus_background"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/plus"
+        android:src="@drawable/ic_plus"
         app:borderWidth="0dp"
         app:layout_anchor="@id/bottom_app_bar"
         app:tint="@color/bt_plus" />
