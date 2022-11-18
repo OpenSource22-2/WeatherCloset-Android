@@ -27,8 +27,8 @@
             android:id="@+id/tv_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginBottom="-8dp"
             android:text="대한민국, 서울"
             android:textColor="@color/black"
             android:textSize="15sp"
@@ -41,12 +41,12 @@
             android:id="@+id/tv_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="11º"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="11º" />
 
         <TextView
             android:id="@+id/tv_today_date"
@@ -54,18 +54,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="3dp"
-            android:text="2022.11.18"
             android:textColor="@color/black"
             android:textSize="9sp"
             app:layout_constraintEnd_toEndOf="@id/tv_temperature"
-            app:layout_constraintTop_toBottomOf="@id/tv_temperature" />
+            app:layout_constraintTop_toBottomOf="@id/tv_temperature"
+            tools:text="2022.11.18" />
 
         <ImageView
+            android:id="@+id/iv_weather"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginEnd="2dp"
             android:scaleType="fitEnd"
-            android:src="@drawable/ic_01n"
+            tools:src="@drawable/ic_01n"
             app:layout_constraintBottom_toTopOf="@id/tv_today_date"
             app:layout_constraintEnd_toStartOf="@id/tv_temperature"
             app:layout_constraintTop_toTopOf="@id/tv_temperature" />

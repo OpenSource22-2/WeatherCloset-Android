@@ -24,7 +24,7 @@ class HomeRecordRvAdapter(private val context: Context) :
         this.itemClickListener = onItemClickListener
     }
 
-    fun addItems(data: ArrayList<HomeRecordResponse>){
+    fun addItems(data: ArrayList<HomeRecordResponse>) {
         this.recordList.addAll(data)
         notifyDataSetChanged()  //변경된 data 적용
     }
@@ -40,9 +40,7 @@ class HomeRecordRvAdapter(private val context: Context) :
                 binding.ivHeart.setImageResource(R.drawable.heart_full)
             else
                 binding.ivHeart.setImageResource(R.drawable.heart_empty)
-
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecordViewHolder {
