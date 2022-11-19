@@ -12,8 +12,8 @@
     </item>
 
     <item
-        android:width="13dp"
-        android:height="13dp"
+        android:width="10dp"
+        android:height="10dp"
         android:bottom="3dp"
         android:drawable="@drawable/ic_star"
         android:gravity="bottom|center">

@@ -8,16 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.opensource.MainActivity
 import com.example.opensource.R
-import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
-import com.prolificinteractive.materialcalendarview.OnMonthChangedListener
+import com.example.opensource.databinding.FragmentCalendarBinding
+import com.prolificinteractive.materialcalendarview.*
 
 
 class CalendarFragment : Fragment() {
 
     private lateinit var widget: MaterialCalendarView
     private lateinit var userDailyRecord: View
+    private lateinit var binding: FragmentCalendarBinding
     private var dateList = arrayListOf<CalendarDay>()
 
 
@@ -25,15 +24,16 @@ class CalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentCalendarBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userDailyRecord = view!!.findViewById(R.id.userDailyRecord)
-        widget = view!!.findViewById(R.id.calendarView)
+        userDailyRecord = view.findViewById(R.id.userDailyRecord)
+        widget = view.findViewById(R.id.calendarView)
 
         setCalendarView()
     }
@@ -46,6 +46,8 @@ class CalendarFragment : Fragment() {
         dateList.add(CalendarDay.from(2022, 11, 11))
         dateList.add(CalendarDay.from(2022, 11, 23))
         dateList.add(CalendarDay.from(2022, 12, 1))
+        dateList.add(CalendarDay.from(2023, 4, 30))
+
 
         // 추가된 기록을 받아와 달력에 표시
         widget.addDecorators(EventDecorator(dateList, activity))
@@ -59,6 +61,7 @@ class CalendarFragment : Fragment() {
                 }
                 else {
                     userDailyRecord.setVisibility(View.INVISIBLE)
+
                 }
             }
         })
