@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:orientation="vertical"
-    android:paddingVertical="20dp"
     tools:context=".calendar.CalendarFragment">
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -14,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
+        android:layout_marginVertical="20dp"
         app:mcv_showOtherDates="decorated_disabled"
         app:mcv_monthLabels="@array/custom_months"
         app:mcv_weekDayLabels="@array/custom_weekdays"
@@ -21,10 +21,12 @@
 
     <include
         android:id="@+id/userDailyRecord"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:visibility="invisible"
-        layout="@layout/view_daily_record"/>
+        layout="@layout/view_calendar"/>
 
 </LinearLayout>
