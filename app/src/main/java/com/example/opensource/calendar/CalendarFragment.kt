@@ -57,11 +57,15 @@ class CalendarFragment : Fragment() {
             override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
                 // 기록이 존재하는 경우, 유저 기록을 화면에 출력
                 if(dateList.contains(date)) {
+
+                    widget.state().edit()
+                        .setCalendarDisplayMode(CalendarMode.WEEKS)
+                        .commit()
+
                     userDailyRecord.setVisibility(View.VISIBLE)
                 }
                 else {
                     userDailyRecord.setVisibility(View.INVISIBLE)
-
                 }
             }
         })
