@@ -30,7 +30,7 @@ class MyPageFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        val fragmentList = listOf(UserRecordFragment(), UserLikeFragment())
+        val fragmentList = listOf(UserRecordFragment(), MyPageLikeFragment())
 
         tabViewPagerAdapter = MyPageTabViewPagerAdapter(this)
         tabViewPagerAdapter.fragments.addAll(fragmentList)

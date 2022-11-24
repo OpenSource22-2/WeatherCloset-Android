@@ -15,6 +15,6 @@ class UserRecordFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_record, container, false)
+        return inflater.inflate(R.layout.fragment_my_page_record, container, false)
     }
 }
