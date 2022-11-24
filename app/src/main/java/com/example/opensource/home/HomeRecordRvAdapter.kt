@@ -13,7 +13,7 @@ import com.example.opensource.databinding.ItemHomeBinding
 class HomeRecordRvAdapter(private val context: Context) :
     RecyclerView.Adapter<HomeRecordRvAdapter.HomeRecordViewHolder>() {
 
-    var recordList = mutableListOf<HomeRecordResponse>()
+    var recordList = mutableListOf<HomeRecordResponse.HomeRecordData>()
     private lateinit var itemClickListener: OnItemClickListener
 
     interface OnItemClickListener {
@@ -24,14 +24,14 @@ class HomeRecordRvAdapter(private val context: Context) :
         this.itemClickListener = onItemClickListener
     }
 
-    fun addItems(data: ArrayList<HomeRecordResponse>) {
+    fun addItems(data: List<HomeRecordResponse.HomeRecordData>) {
         this.recordList.addAll(data)
         notifyDataSetChanged()  //변경된 data 적용
     }
 
     inner class HomeRecordViewHolder(private val binding: ItemHomeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data: HomeRecordResponse) {
+        fun onBind(data: HomeRecordResponse.HomeRecordData) {
             Glide.with(context)
                 .load(data.imageUrl)
                 .into(binding.ivClothes)

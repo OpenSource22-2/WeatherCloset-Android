@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.opensource.R
+import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.CreateRecordRequest
 import com.example.opensource.data.remote.CreateRecordResponse
@@ -254,7 +255,6 @@ class SaveFragment : BottomSheetDialogFragment() {
 
     // 서버에 데이터 전송(POST)
     private fun saveRecord() {
-        // testdata
         val requestRecordData = CreateRecordRequest(
             comment = binding.etMemo.text.toString(),
             heart = heartState,
@@ -262,9 +262,8 @@ class SaveFragment : BottomSheetDialogFragment() {
             stars = binding.rbStar.rating.toInt()
         )
 
-        Log.d(TAG, "saveRecord: imageUri: $postUri")
         val call: Call<CreateRecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.createRecord(requestRecordData)
+            RetrofitObject.provideWeatherClosetApi.createRecord(Secret.memberId, requestRecordData)
 
         call.enqueue(object : Callback<CreateRecordResponse> {
             override fun onResponse(
@@ -272,14 +271,11 @@ class SaveFragment : BottomSheetDialogFragment() {
                 response: Response<CreateRecordResponse>
             ) {
                 if (response.isSuccessful) {
-                    val data = response.body()
-                    Log.d(TAG, "onResponse: success : $data")
+                    Log.d(TAG, "onResponse: success : ${response.body()}")
                 } else {
                     Log.e(TAG, "onResponse: $response")
-                    Log.e(TAG, "onResponse: fail: response error")
                 }
             }
-
             override fun onFailure(call: Call<CreateRecordResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: $t")
             }

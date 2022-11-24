@@ -1,12 +1,16 @@
 package com.example.opensource.data.remote
 
-import java.util.*
-
 data class HomeRecordResponse(
-    val imageUrl: String,
-    val stars: Int,
-    val comment: String,
-    val createdAt: String,
-    val heart: Boolean,
-    val temperature: Int
-)
+    val data: ArrayList<HomeRecordData>
+) {
+    data class HomeRecordData(
+        val comment: String,
+        val createdAt: String,
+        val heart: Boolean,
+        val id: Int,
+        val imageUrl: String,
+        val stars: Int,
+        val temperature: Int,
+        val username: String
+    )
+}

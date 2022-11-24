@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.opensource.Secret
+import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
@@ -21,8 +22,10 @@ import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -47,8 +50,9 @@ class HomeFragment : Fragment() {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-//        initPopUp()
-        initAdapter()
+//      TODO: initPopUp()
+//        setData() // 서버 통신
+        getRecordList() // dummy
         clickRecordItemView()
         return binding.root
     }
@@ -58,61 +62,90 @@ class HomeFragment : Fragment() {
         getWeatherInCurrentLocation()
     }
 
-    private fun initPopUp() {
+    private fun setData() {
+        val call: Call<HomeRecordResponse> = RetrofitObject.provideWeatherClosetApi.getRecordList(1)
 
+        call.enqueue(object : Callback<HomeRecordResponse> {
+            override fun onResponse(
+                call: Call<HomeRecordResponse>,
+                response: Response<HomeRecordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    initAdapter(response.body()?.data!!)
+                } else {
+                    Log.e(TAG, "onResponse: response error: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<HomeRecordResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+            }
+        })
     }
 
-    private fun initAdapter() {
+    private fun initAdapter(data: List<HomeRecordResponse.HomeRecordData>) {
         recordRvAdapter = HomeRecordRvAdapter(requireContext())
-        recordRvAdapter.addItems(createDummy()) // dummy
+        recordRvAdapter.addItems(data)
+        recordRvAdapter.notifyDataSetChanged()
         binding.rvRecord.adapter = recordRvAdapter
     }
 
-    private fun createDummy(): ArrayList<HomeRecordResponse> {
-        val data = ArrayList<HomeRecordResponse>()
+    private fun getRecordList() {
 
+        val data = ArrayList<HomeRecordResponse.HomeRecordData>()
         data.add(
-            HomeRecordResponse(
-                "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-                5,
-                "comment",
-                "2022-11-18",
-                false,
-                11
+            HomeRecordResponse.HomeRecordData(
+                id = 1,
+                username = "최유빈",
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
+                stars = 5,
+                comment = "comment",
+                createdAt = "2022-11-18",
+                heart = false,
+                temperature = 11
             )
         )
         data.add(
-            HomeRecordResponse(
-                "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150343_.png?alt=media&token=87d29947-38ea-4344-afda-dbd59c98ed1d",
-                5,
-                "comment",
-                "2022-11-18",
-                true,
-                11
+            HomeRecordResponse.HomeRecordData(
+                id = 1,
+                username = "최유빈",
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150343_.png?alt=media&token=87d29947-38ea-4344-afda-dbd59c98ed1d",
+                stars = 5,
+                comment = "comment",
+                createdAt = "2022-11-18",
+                heart = true,
+                temperature = 11
             )
         )
         data.add(
-            HomeRecordResponse(
-                "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-                5,
-                "comment",
-                "2022-11-18",
-                true,
-                11
+            HomeRecordResponse.HomeRecordData(
+                id = 1,
+                username = "최유빈",
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
+                stars = 5,
+                comment = "comment",
+                createdAt = "2022-11-18",
+                heart = true,
+                temperature = 11
             )
         )
         data.add(
-            HomeRecordResponse(
-                "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-                5,
-                "comment",
-                "2022-11-18",
-                true,
-                11
+            HomeRecordResponse.HomeRecordData(
+                id = 1,
+                username = "최유빈",
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
+                stars = 5,
+                comment = "comment",
+                createdAt = "2022-11-18",
+                heart = true,
+                temperature = 11
             )
         )
 
-        return data
+        recordRvAdapter = HomeRecordRvAdapter(requireContext())
+        recordRvAdapter.addItems(data)
+        recordRvAdapter.notifyDataSetChanged()
+        binding.rvRecord.adapter = recordRvAdapter
     }
 
     private fun clickRecordItemView() {
@@ -195,7 +228,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateWeather(weather: WeatherData) {
-        binding.tvTemperature.text = weather.tempString + " ºC"
+        binding.tvTemperature.text = weather.tempString + "ºC"
         val resourceID = resources.getIdentifier(weather.icon, "drawable", activity?.packageName)
         binding.ivWeather.setImageResource(resourceID)
         val mFormat = SimpleDateFormat("yyyy. MM. dd")
