@@ -7,16 +7,34 @@
     android:layout_height="match_parent"
     tools:context=".my_page.MyPageFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:text="mypage"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14sp"
+        android:layout_marginTop="18sp"
+        android:text="김익수님의 마이페이지"
+        android:textColor="@color/gray_5"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:tabIndicatorColor="@color/main_blue"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="@color/main_blue" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_home"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tl_user" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
