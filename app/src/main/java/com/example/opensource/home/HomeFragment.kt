@@ -51,9 +51,8 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 //      TODO: initPopUp()
-//        setData() // 서버 통신
-        getRecordList() // dummy
-        clickRecordItemView()
+        setData() // 서버 통신
+//        getRecordList() // dummy
         return binding.root
     }
 
@@ -63,7 +62,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setData() {
-        val call: Call<HomeRecordResponse> = RetrofitObject.provideWeatherClosetApi.getRecordList(1)
+        val call: Call<HomeRecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.getRecordList(Secret.memberId)
 
         call.enqueue(object : Callback<HomeRecordResponse> {
             override fun onResponse(
@@ -83,11 +83,12 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun initAdapter(data: List<HomeRecordResponse.HomeRecordData>) {
+    private fun initAdapter(data: ArrayList<HomeRecordResponse.HomeRecordData>) {
         recordRvAdapter = HomeRecordRvAdapter(requireContext())
         recordRvAdapter.addItems(data)
         recordRvAdapter.notifyDataSetChanged()
         binding.rvRecord.adapter = recordRvAdapter
+        clickRecordItemView()
     }
 
     private fun getRecordList() {
