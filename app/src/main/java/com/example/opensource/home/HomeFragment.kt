@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.opensource.Secret
@@ -17,6 +16,7 @@ import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
+import com.example.opensource.util.RecordModifyFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -153,8 +153,9 @@ class HomeFragment : Fragment() {
         recordRvAdapter.setItemClickListener(object :
             HomeRecordRvAdapter.OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
-                // TODO: 다이얼로그
-                Toast.makeText(requireContext(), "ITEM CLICK", Toast.LENGTH_SHORT).show()
+                // show dialog
+                val dialog = RecordModifyFragment()
+                dialog.show(childFragmentManager, "dialog")
             }
         })
     }
