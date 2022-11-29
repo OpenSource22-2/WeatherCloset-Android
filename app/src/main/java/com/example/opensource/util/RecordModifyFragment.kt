@@ -36,6 +36,6 @@ class RecordModifyFragment : DialogFragment() {
 
     private fun setLayoutSize(view: View) {
         view.layoutParams.width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-        view.layoutParams.height = (resources.displayMetrics.heightPixels * 0.64).toInt()
+        view.layoutParams.height = (resources.displayMetrics.heightPixels * 0.70).toInt()
     }
 }

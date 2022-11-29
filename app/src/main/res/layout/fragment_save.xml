@@ -24,8 +24,8 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="20dp"
-        android:visibility="gone"
         android:src="@drawable/heart_empty"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/iv_gallery"
         app:layout_constraintTop_toTopOf="@id/iv_gallery" />
 
