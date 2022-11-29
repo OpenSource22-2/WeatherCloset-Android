@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.opensource.Secret
@@ -17,6 +16,7 @@ import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
+import com.example.opensource.util.RecordModifyFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -51,9 +51,8 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 //      TODO: initPopUp()
-//        setData() // 서버 통신
-        getRecordList() // dummy
-        clickRecordItemView()
+        setData() // 서버 통신
+//        getRecordList() // dummy
         return binding.root
     }
 
@@ -63,7 +62,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setData() {
-        val call: Call<HomeRecordResponse> = RetrofitObject.provideWeatherClosetApi.getRecordList(1)
+        val call: Call<HomeRecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.getRecordList(Secret.memberId)
 
         call.enqueue(object : Callback<HomeRecordResponse> {
             override fun onResponse(
@@ -83,11 +83,12 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun initAdapter(data: List<HomeRecordResponse.HomeRecordData>) {
+    private fun initAdapter(data: ArrayList<HomeRecordResponse.HomeRecordData>) {
         recordRvAdapter = HomeRecordRvAdapter(requireContext())
         recordRvAdapter.addItems(data)
         recordRvAdapter.notifyDataSetChanged()
         binding.rvRecord.adapter = recordRvAdapter
+        clickRecordItemView()
     }
 
     private fun getRecordList() {
@@ -152,8 +153,9 @@ class HomeFragment : Fragment() {
         recordRvAdapter.setItemClickListener(object :
             HomeRecordRvAdapter.OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
-                // TODO: 다이얼로그
-                Toast.makeText(requireContext(), "ITEM CLICK", Toast.LENGTH_SHORT).show()
+                // show dialog
+                val dialog = RecordModifyFragment()
+                dialog.show(childFragmentManager, "dialog")
             }
         })
     }
