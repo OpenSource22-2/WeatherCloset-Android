@@ -2,6 +2,7 @@ package com.example.opensource.save
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
@@ -72,7 +73,7 @@ class SaveFragment : BottomSheetDialogFragment() {
 
         binding = FragmentSaveBinding.inflate(inflater, container, false)
 
-        ivGallery = binding.ivGallery
+        ivGallery = binding.layoutEdit.ivGallery
         btnUpload = binding.btnUpload
 
         initProgressDialog()
@@ -80,6 +81,7 @@ class SaveFragment : BottomSheetDialogFragment() {
         clickBtnUpload()
         clickHeart()
         clickChip()
+        clickDate()
 
         return binding.root
     }
@@ -95,12 +97,32 @@ class SaveFragment : BottomSheetDialogFragment() {
             (resources.displayMetrics.heightPixels * 0.94).toInt()
     }
 
+    private fun clickDate() {
+        binding.layoutEdit.tvSelectDate.setOnClickListener {
+            val cal = Calendar.getInstance()    //캘린더뷰 만들기
+            val dateSetListener =
+                DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                    Log.d(TAG, "clickDate: $year, $month, $dayOfMonth")
+                    binding.layoutEdit.tvSelectDate.text = "$year. ${month + 1}. $dayOfMonth"
+                }
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.datePicker.spinnersShown = true
+            datePickerDialog.show()
+        }
+    }
+
     override fun getTheme(): Int {
         return R.style.AppBottomSheetDialogTheme
     }
 
     private fun clickIvGallery() {
-        binding.ivGallery.setOnClickListener {
+        binding.layoutEdit.ivGallery.setOnClickListener {
             intent = Intent(Intent.ACTION_PICK)
             intent.type = MediaStore.Images.Media.CONTENT_TYPE
             intent.type = "image/*"
@@ -109,12 +131,12 @@ class SaveFragment : BottomSheetDialogFragment() {
     }
 
     private fun clickHeart() {
-        binding.ivHeart.setOnClickListener {
+        binding.layoutEdit.ivHeart.setOnClickListener {
             heartState = if (heartState) {
-                binding.ivHeart.setImageResource(R.drawable.heart_empty)
+                binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_empty)
                 false
             } else {
-                binding.ivHeart.setImageResource(R.drawable.heart_full)
+                binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_full)
                 true
             }
         }
@@ -137,23 +159,73 @@ class SaveFragment : BottomSheetDialogFragment() {
 
     private fun clickChip() {
         selectedChipList = Array(10) { false }
-        binding.chip1.setOnClickListener { setChipList(binding.chip1, 0) }
-        binding.chip2.setOnClickListener { setChipList(binding.chip2, 1) }
-        binding.chip3.setOnClickListener { setChipList(binding.chip3, 2) }
-        binding.chip4.setOnClickListener { setChipList(binding.chip4, 3) }
-        binding.chip5.setOnClickListener { setChipList(binding.chip5, 4) }
-        binding.chip6.setOnClickListener { setChipList(binding.chip6, 5) }
-        binding.chip7.setOnClickListener { setChipList(binding.chip7, 6) }
-        binding.chip8.setOnClickListener { setChipList(binding.chip8, 7) }
-        binding.chip9.setOnClickListener { setChipList(binding.chip9, 8) }
-        binding.chip10.setOnClickListener { setChipList(binding.chip10, 9) }
+        binding.layoutEdit.chip1.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip1,
+                0
+            )
+        }
+        binding.layoutEdit.chip2.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip2,
+                1
+            )
+        }
+        binding.layoutEdit.chip3.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip3,
+                2
+            )
+        }
+        binding.layoutEdit.chip4.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip4,
+                3
+            )
+        }
+        binding.layoutEdit.chip5.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip5,
+                4
+            )
+        }
+        binding.layoutEdit.chip6.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip6,
+                5
+            )
+        }
+        binding.layoutEdit.chip7.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip7,
+                6
+            )
+        }
+        binding.layoutEdit.chip8.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip8,
+                7
+            )
+        }
+        binding.layoutEdit.chip9.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip9,
+                8
+            )
+        }
+        binding.layoutEdit.chip10.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip10,
+                9
+            )
+        }
     }
 
     private fun clickBtnUpload() {
         btnUpload.setOnClickListener {
             if (imagePath.isNotEmpty() && imgFrom >= 100
-                && binding.etMemo.text?.isNotEmpty() == true
-                && binding.rbStar.rating > 0
+                && binding.layoutEdit.etMemo.text?.isNotEmpty() == true
+                && binding.layoutEdit.rbStar.rating > 0
                 && countSelectedChips() > 0
             )
                 uploadImg()
@@ -183,7 +255,7 @@ class SaveFragment : BottomSheetDialogFragment() {
                 ivGallery.setPadding(0, 0, 0, 0)
             }
             // 좋아요 이미지 visible로 변경
-            binding.ivHeart.visibility = View.VISIBLE
+            binding.layoutEdit.ivHeart.visibility = View.VISIBLE
         }
     }
 
@@ -202,12 +274,6 @@ class SaveFragment : BottomSheetDialogFragment() {
                     .child(imageFileName) // 이미지 파일 경로 지정 (/item/imageFileName)
                 uploadTask = reference.putFile(imageUri) // 업로드할 파일과 업로드할 위치 설정
             }
-//            CAMERA -> {
-//                /*카메라 선택 시 생성했던 이미지파일명으로 reference 에 경로 세팅,
-//                 * uploadTask 에서 생성한 이미지파일을 업로드하기로 설정*/reference = storage.reference.child("item")
-//                    .child(imageFile.name) // imageFile.toString()을 할 경우 해당 파일의 경로 자체가 불러와짐
-//                uploadTask = reference.putFile(Uri.fromFile(imageFile)) // 업로드할 파일과 업로드할 위치 설정
-//            }
         }
 
         // 파일 업로드 시작
@@ -256,10 +322,10 @@ class SaveFragment : BottomSheetDialogFragment() {
     // 서버에 데이터 전송(POST)
     private fun saveRecord() {
         val requestRecordData = CreateRecordRequest(
-            comment = binding.etMemo.text.toString(),
+            comment = binding.layoutEdit.etMemo.text.toString(),
             heart = heartState,
             imageUrl = postUri,
-            stars = binding.rbStar.rating.toInt()
+            stars = binding.layoutEdit.rbStar.rating.toInt()
         )
 
         val call: Call<BaseResponse> =
