@@ -91,63 +91,63 @@ class HomeFragment : Fragment() {
         clickRecordItemView()
     }
 
-    private fun getRecordList() {
-
-        val data = ArrayList<HomeRecordResponse.HomeRecordData>()
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = false,
-                temperature = 11
-            )
-        )
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150343_.png?alt=media&token=87d29947-38ea-4344-afda-dbd59c98ed1d",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = true,
-                temperature = 11
-            )
-        )
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = true,
-                temperature = 11
-            )
-        )
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = true,
-                temperature = 11
-            )
-        )
-
-        recordRvAdapter = HomeRecordRvAdapter(requireContext())
-        recordRvAdapter.addItems(data)
-        recordRvAdapter.notifyDataSetChanged()
-        binding.rvRecord.adapter = recordRvAdapter
-    }
+//    private fun getRecordList() {
+//
+//        val data = ArrayList<HomeRecordResponse.HomeRecordData>()
+//        data.add(
+//            HomeRecordResponse.HomeRecordData(
+//                id = 1,
+//                username = "최유빈",
+//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
+//                stars = 5,
+//                comment = "comment",
+//                recordDate = "2022. 11. 18",
+//                heart = false,
+//                temperature = 11.toFloat(),
+//            )
+//        )
+//        data.add(
+//            HomeRecordResponse.HomeRecordData(
+//                id = 1,
+//                username = "최유빈",
+//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150343_.png?alt=media&token=87d29947-38ea-4344-afda-dbd59c98ed1d",
+//                stars = 5,
+//                comment = "comment",
+//                recordDate = "2022. 11. 18",
+//                heart = true,
+//                temperature = 11.toFloat(),
+//            )
+//        )
+//        data.add(
+//            HomeRecordResponse.HomeRecordData(
+//                id = 1,
+//                username = "최유빈",
+//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
+//                stars = 5,
+//                comment = "comment",
+//                recordDate = "2022. 11. 18",
+//                heart = true,
+//                temperature = 11.toFloat(),
+//            )
+//        )
+//        data.add(
+//            HomeRecordResponse.HomeRecordData(
+//                id = 1,
+//                username = "최유빈",
+//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
+//                stars = 5,
+//                comment = "comment",
+//                recordDate = "2022. 11. 18",
+//                heart = true,
+//                temperature = 11.toFloat(),
+//            )
+//        )
+//
+//        recordRvAdapter = HomeRecordRvAdapter(requireContext())
+//        recordRvAdapter.addItems(data)
+//        recordRvAdapter.notifyDataSetChanged()
+//        binding.rvRecord.adapter = recordRvAdapter
+//    }
 
     private fun clickRecordItemView() {
         recordRvAdapter.setItemClickListener(object :
@@ -163,7 +163,6 @@ class HomeFragment : Fragment() {
     private fun getWeatherInCurrentLocation() {
         mLocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
         mLocationListener = LocationListener { p0 ->
             val params = RequestParams()
             params.put("lat", p0.latitude)
@@ -171,7 +170,6 @@ class HomeFragment : Fragment() {
             params.put("appid", API_KEY)
             doNetworking(params)
         }
-
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -205,7 +203,6 @@ class HomeFragment : Fragment() {
     private fun doNetworking(params: RequestParams) {
         val client = AsyncHttpClient()
 
-        Log.d(TAG, "doNetworking: start")
         client.get(WEATHER_URL, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(
                 statusCode: Int,

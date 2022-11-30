@@ -35,7 +35,7 @@ class HomeRecordRvAdapter(private val context: Context) :
             Glide.with(context)
                 .load(data.imageUrl)
                 .into(binding.ivClothes)
-            binding.tvDate.text = data.createdAt
+            binding.tvDate.text = data.recordDate
             if (data.heart)
                 binding.ivHeart.setImageResource(R.drawable.heart_full)
             else

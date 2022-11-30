@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.opensource.R
 import com.example.opensource.Secret
@@ -58,6 +59,8 @@ class SaveFragment : BottomSheetDialogFragment() {
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
 
     private var heartState: Boolean = false
+    private var recordDate = ""
+
 
     private lateinit var binding: FragmentSaveBinding
 
@@ -102,8 +105,8 @@ class SaveFragment : BottomSheetDialogFragment() {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    Log.d(TAG, "clickDate: $year, $month, $dayOfMonth")
-                    binding.layoutEdit.tvSelectDate.text = "$year. ${month + 1}. $dayOfMonth"
+                    recordDate = "$year. ${month + 1}. $dayOfMonth"
+                    binding.layoutEdit.tvSelectDate.text = recordDate
                 }
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
@@ -227,9 +230,31 @@ class SaveFragment : BottomSheetDialogFragment() {
                 && binding.layoutEdit.etMemo.text?.isNotEmpty() == true
                 && binding.layoutEdit.rbStar.rating > 0
                 && countSelectedChips() > 0
+                && validDate()
             )
                 uploadImg()
         }
+    }
+
+    private fun validDate(): Boolean {
+        if (recordDate.isEmpty()) {
+            Toast.makeText(requireContext(), "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        } else {
+            val date = recordDate.split(". ")
+            val year = date[0].toInt()
+            val month = date[1].toInt()
+            val day = date[2].toInt()
+            val cal = Calendar.getInstance()
+            val curYear = cal.get(Calendar.YEAR)
+            val curMonth = cal.get(Calendar.MONTH) + 1
+            val curDay = cal.get(Calendar.DAY_OF_MONTH)
+            if (year > curYear || (year == curYear && month > curMonth) || (year == curYear && month == curMonth && day > curDay)) {
+                Toast.makeText(requireContext(), "오늘 이전 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return false
+            }
+        }
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -325,7 +350,8 @@ class SaveFragment : BottomSheetDialogFragment() {
             comment = binding.layoutEdit.etMemo.text.toString(),
             heart = heartState,
             imageUrl = postUri,
-            stars = binding.layoutEdit.rbStar.rating.toInt()
+            stars = binding.layoutEdit.rbStar.rating.toInt(),
+            recordDate = recordDate
         )
 
         val call: Call<BaseResponse> =
