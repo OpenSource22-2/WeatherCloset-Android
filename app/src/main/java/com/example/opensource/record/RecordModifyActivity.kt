@@ -3,7 +3,6 @@ package com.example.opensource.record
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -48,7 +47,6 @@ class RecordModifyActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     var imageDate: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
-    private val mProgressDialog = ProgressDialog(this)
     private lateinit var imageUri: Uri
     var storage = FirebaseStorage.getInstance() // 파이어베이스 저장소 객체
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
@@ -160,6 +158,7 @@ class RecordModifyActivity : AppCompatActivity() {
             layout.ivHeart.visibility = View.VISIBLE
             layout.ivGallery.setPadding(0, 0, 0, 0)
             layout.rbStar.rating = recordData?.stars?.toFloat() ?: 0f
+            layout.rbStar.stepSize = 1f
             layout.etMemo.setText(recordData?.comment)
             for (i in recordData?.tag!!) {
                 setTag(layout, i)
@@ -311,7 +310,6 @@ class RecordModifyActivity : AppCompatActivity() {
     private fun uploadImg() {
         Log.d(TAG, "uploadImg: uploading")
         // firebase storage 에 이미지 업로드하는 method
-        showProgressDialog("업로드 중")
         var uploadTask: UploadTask? = null // 파일 업로드하는 객체
         when (imgFrom) {
             GALLERY -> {
@@ -328,18 +326,15 @@ class RecordModifyActivity : AppCompatActivity() {
         // 파일 업로드 시작
         uploadTask!!.addOnSuccessListener {
             // 업로드 성공 시 동작
-            hideProgressDialog()
             Log.d(TAG, "onSuccess: upload")
             downloadUri() // 업로드 성공 시 업로드한 파일 Uri 다운받기
         }.addOnFailureListener { // 업로드 실패 시 동작
-            hideProgressDialog()
             Log.d(TAG, "onFailure: upload")
         }
     }
 
     private fun downloadUri() {
         // 지정한 경로(reference)에 대한 uri 을 다운로드하는 method
-        showProgressDialog("다운로드 중")
         reference.downloadUrl.addOnSuccessListener { uri -> // uri 다운로드 성공 시 동작
             // 다운받은 uri를 인텐트에 넣어 다른 액티비티로 이동
             Log.d(TAG, "onSuccess: download uri: $uri")
@@ -348,20 +343,7 @@ class RecordModifyActivity : AppCompatActivity() {
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
         }
-        hideProgressDialog()
         finish()
-    }
-
-    private fun showProgressDialog(message: String?) {
-        mProgressDialog.setMessage(message)
-        mProgressDialog.isIndeterminate = true
-        mProgressDialog.show()
-    }
-
-    private fun hideProgressDialog() {
-        if (mProgressDialog.isShowing) {
-            mProgressDialog.dismiss()
-        }
     }
 
     // 서버에 데이터 전송(POST)
@@ -371,7 +353,8 @@ class RecordModifyActivity : AppCompatActivity() {
             heart = heartState,
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
-            recordDate = recordDate
+            recordDate = recordDate,
+            tag = getTagList()
         )
 
         val call: Call<BaseResponse> =
@@ -393,5 +376,40 @@ class RecordModifyActivity : AppCompatActivity() {
                 Log.e(TAG, "onFailure: $t")
             }
         })
+    }
+
+    private fun getTagList(): List<String> {
+        val tagList = mutableListOf<String>()
+        if (binding.layoutEdit.chip1.isChecked) {
+            tagList.add(binding.layoutEdit.chip1.text.toString())
+        }
+        if (binding.layoutEdit.chip2.isChecked) {
+            tagList.add(binding.layoutEdit.chip2.text.toString())
+        }
+        if (binding.layoutEdit.chip3.isChecked) {
+            tagList.add(binding.layoutEdit.chip3.text.toString())
+        }
+        if (binding.layoutEdit.chip4.isChecked) {
+            tagList.add(binding.layoutEdit.chip4.text.toString())
+        }
+        if (binding.layoutEdit.chip5.isChecked) {
+            tagList.add(binding.layoutEdit.chip5.text.toString())
+        }
+        if (binding.layoutEdit.chip6.isChecked) {
+            tagList.add(binding.layoutEdit.chip6.text.toString())
+        }
+        if (binding.layoutEdit.chip7.isChecked) {
+            tagList.add(binding.layoutEdit.chip7.text.toString())
+        }
+        if (binding.layoutEdit.chip8.isChecked) {
+            tagList.add(binding.layoutEdit.chip8.text.toString())
+        }
+        if (binding.layoutEdit.chip9.isChecked) {
+            tagList.add(binding.layoutEdit.chip9.text.toString())
+        }
+        if (binding.layoutEdit.chip10.isChecked) {
+            tagList.add(binding.layoutEdit.chip10.text.toString())
+        }
+        return tagList
     }
 }
