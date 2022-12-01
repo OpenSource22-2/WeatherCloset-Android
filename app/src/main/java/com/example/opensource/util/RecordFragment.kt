@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.bumptech.glide.Glide
 import com.example.opensource.R
+import com.example.opensource.data.remote.RecordData
 import com.example.opensource.databinding.FragmentRecordBinding
+import com.example.opensource.databinding.ViewUserRecordBinding
 import com.example.opensource.modify.RecordModifyActivity
 
 
@@ -27,8 +30,76 @@ class RecordFragment : DialogFragment() {
         // Inflate the layout for this fragment
         binding = FragmentRecordBinding.inflate(inflater, container, false)
 
+        setData()
         clickModifyBtn()
         return binding.root
+    }
+
+    private fun setData() {
+        val recordData = RecordData(
+            id = 1,
+            username = "최유빈",
+            imageUrl = "https://avatars.githubusercontent.com/u/48249505?v=4",
+            stars = 5,
+            comment = "좋아요",
+            heart = true,
+            recordDate = "2021. 08. 01",
+            temperature = 25.0,
+            icon = 1,
+            tag = listOf("쌀쌀해요", "추워요"),
+        ) // dummy
+        val layout = binding.layoutRecord
+        layout.tvDate.text = recordData.recordDate
+        Glide.with(this).load(recordData.imageUrl).into(layout.ivRecord)
+        setIcon(layout, recordData.icon)
+        layout.rbStar.rating = recordData.stars.toFloat()
+        setTag(layout, recordData.tag)
+        layout.tvMemo.text = recordData.comment
+    }
+
+    private fun setIcon(layout: ViewUserRecordBinding, icon: Int) {
+        when (icon) {
+            1 -> layout.ivTemperature.setImageResource(R.drawable.ic_13n)
+            2 -> layout.ivTemperature.setImageResource(R.drawable.ic_10d)
+            3 -> layout.ivTemperature.setImageResource(R.drawable.ic_04d)
+            4 -> layout.ivTemperature.setImageResource(R.drawable.ic_03d)
+            5 -> layout.ivTemperature.setImageResource(R.drawable.ic_01d)
+        }
+    }
+
+    private fun setTag(layout: ViewUserRecordBinding, tagList: List<String>) {
+        if (tagList.isNotEmpty()) {
+            layout.chip1.text = tagList[0]
+            layout.chip1.visibility = View.VISIBLE
+        }
+        if (tagList.size >= 2) {
+            layout.chip2.text = tagList[1]
+            layout.chip2.visibility = View.VISIBLE
+        }
+        if (tagList.size >= 3) {
+            layout.chip3.text = tagList[2]
+            layout.chip3.visibility = View.VISIBLE
+        }
+//        when (tagList.size) {
+//            1 -> {
+//                layout.chip1.text = tagList[0]
+//                layout.chip1.visibility = View.VISIBLE
+//            }
+//            2 -> {
+//                layout.chip1.text = tagList[0]
+//                layout.chip2.text = tagList[1]
+//                layout.chip1.visibility = View.VISIBLE
+//                layout.chip2.visibility = View.VISIBLE
+//            }
+//            else -> {
+//                layout.chip1.text = tagList[0]
+//                layout.chip2.text = tagList[1]
+//                layout.chip3.text = tagList[2]
+//                layout.chip1.visibility = View.VISIBLE
+//                layout.chip2.visibility = View.VISIBLE
+//                layout.chip3.visibility = View.VISIBLE
+//            }
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
