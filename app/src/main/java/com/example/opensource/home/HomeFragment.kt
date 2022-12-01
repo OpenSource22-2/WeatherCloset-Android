@@ -16,7 +16,7 @@ import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
-import com.example.opensource.util.RecordModifyFragment
+import com.example.opensource.util.RecordFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -154,7 +154,7 @@ class HomeFragment : Fragment() {
             HomeRecordRvAdapter.OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
                 // show dialog
-                val dialog = RecordModifyFragment()
+                val dialog = RecordFragment()
                 dialog.show(childFragmentManager, "dialog")
             }
         })

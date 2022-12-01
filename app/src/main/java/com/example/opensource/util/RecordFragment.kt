@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.example.opensource.R
-import com.example.opensource.databinding.FragmentRecordModifyBinding
+import com.example.opensource.databinding.FragmentRecordBinding
 
 
-class RecordModifyFragment : DialogFragment() {
+class RecordFragment : DialogFragment() {
 
-    private lateinit var binding: FragmentRecordModifyBinding
+    private lateinit var binding: FragmentRecordBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return Dialog(requireContext(), R.style.DisableDialogBackground)
@@ -23,7 +23,7 @@ class RecordModifyFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentRecordModifyBinding.inflate(inflater, container, false)
+        binding = FragmentRecordBinding.inflate(inflater, container, false)
 
         return binding.root
     }
