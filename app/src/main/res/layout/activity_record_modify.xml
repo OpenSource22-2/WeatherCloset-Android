@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".modify.RecordModifyActivity">
+    tools:context=".record.RecordModifyActivity">
 
     <TextView
         android:id="@+id/tv_save"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/layout_edit_record"
+        android:id="@+id/layout_edit"
         layout="@layout/view_edit_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

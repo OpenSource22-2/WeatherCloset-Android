@@ -16,7 +16,7 @@ import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
-import com.example.opensource.util.RecordFragment
+import com.example.opensource.record.RecordFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams

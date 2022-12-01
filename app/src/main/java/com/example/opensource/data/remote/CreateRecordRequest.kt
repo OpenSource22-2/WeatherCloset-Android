@@ -6,4 +6,5 @@ data class CreateRecordRequest(
     val imageUrl: String,
     val stars: Int,
     val recordDate: String,
+    val tag: List<String>,
 )

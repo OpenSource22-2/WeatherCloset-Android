@@ -1,4 +1,4 @@
-package com.example.opensource.save
+package com.example.opensource.record
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -9,22 +9,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.opensource.R
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.BaseResponse
 import com.example.opensource.data.remote.CreateRecordRequest
-import com.example.opensource.databinding.FragmentSaveBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.example.opensource.data.remote.RecordData
+import com.example.opensource.databinding.ActivityRecordModifyBinding
+import com.example.opensource.databinding.ViewEditRecordBinding
+import com.example.opensource.record.RecordFragment.Companion.RECORD_DATA
 import com.google.android.material.chip.Chip
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -35,12 +32,14 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SaveFragment : BottomSheetDialogFragment() {
+class RecordModifyActivity : AppCompatActivity() {
 
     companion object {
         private const val GALLERY = 101 // 갤러리 선택 시 인텐트로 보내는 값
-        private const val TAG = "SAVE_FRAGMENT"
+        private const val TAG = "RECORD_MODIFY_FRAGMENT"
     }
+
+    private lateinit var binding: ActivityRecordModifyBinding
 
     var imgFrom = 0 // 이미지 어디서 가져왔는지 (카메라 or 갤러리)
     private var imagePath = ""
@@ -49,55 +48,168 @@ class SaveFragment : BottomSheetDialogFragment() {
 
     @SuppressLint("SimpleDateFormat")
     var imageDate: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
-    private lateinit var intent: Intent
-
-    private lateinit var ivGallery: ImageView
-    private lateinit var btnUpload: Button
-    private lateinit var mProgressDialog: ProgressDialog
+    private val mProgressDialog = ProgressDialog(this)
     private lateinit var imageUri: Uri
     var storage = FirebaseStorage.getInstance() // 파이어베이스 저장소 객체
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
 
+
     private var heartState: Boolean = false
     private var recordDate = ""
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityRecordModifyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    private lateinit var binding: FragmentSaveBinding
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setDialogHeight()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        binding = FragmentSaveBinding.inflate(inflater, container, false)
-
-        ivGallery = binding.layoutEdit.ivGallery
-        btnUpload = binding.btnUpload
-
-        initProgressDialog()
-        clickIvGallery()
-        clickBtnUpload()
-        clickHeart()
-        clickChip()
+        clickChip(binding.layoutEdit)
         clickDate()
-
-        return binding.root
+        clickIvGallery()
+        clickHeart()
+        clickBtnSave()
+        setData()
     }
 
-    private fun setDialogHeight() {
-        (dialog as BottomSheetDialog).behavior.apply {
-            state = BottomSheetBehavior.STATE_EXPANDED // 높이 고정
-            skipCollapsed = true // HALF_EXPANDED 안되게 설정
-            isHideable = false
-            isDraggable = false
+    private fun clickChip(layout: ViewEditRecordBinding) {
+        selectedChipList = Array(10) { false }
+        layout.chip1.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip1,
+                0
+            )
         }
-        binding.clDialog.layoutParams.height =
-            (resources.displayMetrics.heightPixels * 0.94).toInt()
+        layout.chip2.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip2,
+                1
+            )
+        }
+        layout.chip3.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip3,
+                2
+            )
+        }
+        layout.chip4.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip4,
+                3
+            )
+        }
+        layout.chip5.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip5,
+                4
+            )
+        }
+        layout.chip6.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip6,
+                5
+            )
+        }
+        layout.chip7.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip7,
+                6
+            )
+        }
+        layout.chip8.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip8,
+                7
+            )
+        }
+        layout.chip9.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip9,
+                8
+            )
+        }
+        layout.chip10.setOnClickListener {
+            setChipList(
+                binding.layoutEdit.chip10,
+                9
+            )
+        }
+    }
+
+    private fun setChipList(chip: Chip, pos: Int) {
+        val cnt = countSelectedChips()
+        if (cnt == 3 && chip.isChecked)
+            chip.isChecked = false
+        else selectedChipList[pos] = chip.isChecked
+    }
+
+    private fun countSelectedChips(): Int {
+        var cnt = 0
+        for (i in 0..9) {
+            if (selectedChipList[i]) ++cnt
+        }
+        return cnt
+    }
+
+    private fun setData() {
+        intent.let {
+            val recordData = it.getParcelableExtra<RecordData>(RECORD_DATA)
+            val layout = binding.layoutEdit
+            layout.tvSelectDate.text = recordData?.recordDate
+            Glide.with(this).load(recordData?.imageUrl).into(layout.ivGallery)
+            layout.ivGallery.alpha = 1F
+            layout.ivGallery.setBackgroundResource(R.color.white)
+            layout.ivHeart.visibility = View.VISIBLE
+            layout.ivGallery.setPadding(0, 0, 0, 0)
+            layout.rbStar.rating = recordData?.stars?.toFloat() ?: 0f
+            layout.etMemo.setText(recordData?.comment)
+            for (i in recordData?.tag!!) {
+                setTag(layout, i)
+            }
+        }
+    }
+
+    private fun setTag(layout: ViewEditRecordBinding, tag: String) {
+        when (tag) {
+            "더워요" -> {
+                layout.chip1.isChecked = true
+                selectedChipList[0] = true
+            }
+            "따뜻해요" -> {
+                layout.chip2.isChecked = true
+                selectedChipList[1] = true
+            }
+            "습해요" -> {
+                layout.chip3.isChecked = true
+                selectedChipList[2] = true
+            }
+            "추워요" -> {
+                layout.chip4.isChecked = true
+                selectedChipList[3] = true
+            }
+            "일교차가 커요" -> {
+                layout.chip5.isChecked = true
+                selectedChipList[4] = true
+            }
+            "선선해요" -> {
+                layout.chip6.isChecked = true
+                selectedChipList[5] = true
+            }
+            "쌀쌀해요" -> {
+                layout.chip7.isChecked = true
+                selectedChipList[6] = true
+            }
+            "건조해요" -> {
+                layout.chip8.isChecked = true
+                selectedChipList[7] = true
+            }
+            "바람이 불어요" -> {
+                layout.chip9.isChecked = true
+                selectedChipList[8] = true
+            }
+            "햇빛이 강해요" -> {
+                layout.chip10.isChecked = true
+                selectedChipList[9] = true
+            }
+        }
     }
 
     private fun clickDate() {
@@ -109,7 +221,7 @@ class SaveFragment : BottomSheetDialogFragment() {
                     binding.layoutEdit.tvSelectDate.text = recordDate
                 }
             val datePickerDialog = DatePickerDialog(
-                requireContext(),
+                this,
                 dateSetListener,
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
@@ -118,10 +230,6 @@ class SaveFragment : BottomSheetDialogFragment() {
             datePickerDialog.datePicker.spinnersShown = true
             datePickerDialog.show()
         }
-    }
-
-    override fun getTheme(): Int {
-        return R.style.AppBottomSheetDialogTheme
     }
 
     private fun clickIvGallery() {
@@ -139,106 +247,15 @@ class SaveFragment : BottomSheetDialogFragment() {
                 binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_empty)
                 false
             } else {
-                binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_full)
+                binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_white_line)
                 true
             }
         }
     }
 
-    private fun countSelectedChips(): Int {
-        var cnt = 0
-        for (i in 0..9) {
-            if (selectedChipList[i]) ++cnt
-        }
-        return cnt
-    }
-
-    private fun setChipList(chip: Chip, pos: Int) {
-        val cnt = countSelectedChips()
-        if (cnt == 3 && chip.isChecked)
-            chip.isChecked = false
-        else selectedChipList[pos] = chip.isChecked
-    }
-
-    private fun clickChip() {
-        selectedChipList = Array(10) { false }
-        binding.layoutEdit.chip1.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip1,
-                0
-            )
-        }
-        binding.layoutEdit.chip2.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip2,
-                1
-            )
-        }
-        binding.layoutEdit.chip3.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip3,
-                2
-            )
-        }
-        binding.layoutEdit.chip4.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip4,
-                3
-            )
-        }
-        binding.layoutEdit.chip5.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip5,
-                4
-            )
-        }
-        binding.layoutEdit.chip6.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip6,
-                5
-            )
-        }
-        binding.layoutEdit.chip7.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip7,
-                6
-            )
-        }
-        binding.layoutEdit.chip8.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip8,
-                7
-            )
-        }
-        binding.layoutEdit.chip9.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip9,
-                8
-            )
-        }
-        binding.layoutEdit.chip10.setOnClickListener {
-            setChipList(
-                binding.layoutEdit.chip10,
-                9
-            )
-        }
-    }
-
-    private fun clickBtnUpload() {
-        btnUpload.setOnClickListener {
-            if (imagePath.isNotEmpty() && imgFrom >= 100
-                && binding.layoutEdit.etMemo.text?.isNotEmpty() == true
-                && binding.layoutEdit.rbStar.rating > 0
-                && countSelectedChips() > 0
-                && validDate()
-            )
-                uploadImg()
-        }
-    }
-
     private fun validDate(): Boolean {
         if (recordDate.isEmpty()) {
-            Toast.makeText(requireContext(), "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return false
         } else {
             val date = recordDate.split(". ")
@@ -250,11 +267,23 @@ class SaveFragment : BottomSheetDialogFragment() {
             val curMonth = cal.get(Calendar.MONTH) + 1
             val curDay = cal.get(Calendar.DAY_OF_MONTH)
             if (year > curYear || (year == curYear && month > curMonth) || (year == curYear && month == curMonth && day > curDay)) {
-                Toast.makeText(requireContext(), "오늘 이전 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "오늘 이전 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return false
             }
         }
         return true
+    }
+
+    private fun clickBtnSave() {
+        binding.tvSave.setOnClickListener {
+            if (imagePath.isNotEmpty() && imgFrom >= 100
+                && binding.layoutEdit.etMemo.text?.isNotEmpty() == true
+                && binding.layoutEdit.rbStar.rating > 0
+                && countSelectedChips() > 0
+                && validDate()
+            )
+                uploadImg()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -273,14 +302,9 @@ class SaveFragment : BottomSheetDialogFragment() {
             if (imagePath.isNotEmpty()) {
                 Glide.with(this)
                     .load(imagePath)
-                    .into(ivGallery)
+                    .into(binding.layoutEdit.ivGallery)
                 imgFrom = requestCode // 사진을 가져온 곳이 카메라일 경우 CAMERA(100), 갤러리일 경우 GALLERY(101)
-                ivGallery.alpha = 1F
-                ivGallery.setBackgroundResource(R.color.white)
-                ivGallery.setPadding(0, 0, 0, 0)
             }
-            // 좋아요 이미지 visible로 변경
-            binding.layoutEdit.ivHeart.visibility = View.VISIBLE
         }
     }
 
@@ -325,11 +349,7 @@ class SaveFragment : BottomSheetDialogFragment() {
             Log.d(TAG, "onFailure: download")
         }
         hideProgressDialog()
-        dismiss()
-    }
-
-    private fun initProgressDialog() {
-        mProgressDialog = ProgressDialog(requireActivity())
+        finish()
     }
 
     private fun showProgressDialog(message: String?) {
@@ -351,8 +371,7 @@ class SaveFragment : BottomSheetDialogFragment() {
             heart = heartState,
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
-            recordDate = recordDate,
-            tag = getTagList(),
+            recordDate = recordDate
         )
 
         val call: Call<BaseResponse> =
@@ -374,40 +393,5 @@ class SaveFragment : BottomSheetDialogFragment() {
                 Log.e(TAG, "onFailure: $t")
             }
         })
-    }
-
-    private fun getTagList(): List<String> {
-        val tagList = mutableListOf<String>()
-        if (binding.layoutEdit.chip1.isChecked) {
-            tagList.add(binding.layoutEdit.chip1.text.toString())
-        }
-        if (binding.layoutEdit.chip2.isChecked) {
-            tagList.add(binding.layoutEdit.chip2.text.toString())
-        }
-        if (binding.layoutEdit.chip3.isChecked) {
-            tagList.add(binding.layoutEdit.chip3.text.toString())
-        }
-        if (binding.layoutEdit.chip4.isChecked) {
-            tagList.add(binding.layoutEdit.chip4.text.toString())
-        }
-        if (binding.layoutEdit.chip5.isChecked) {
-            tagList.add(binding.layoutEdit.chip5.text.toString())
-        }
-        if (binding.layoutEdit.chip6.isChecked) {
-            tagList.add(binding.layoutEdit.chip6.text.toString())
-        }
-        if (binding.layoutEdit.chip7.isChecked) {
-            tagList.add(binding.layoutEdit.chip7.text.toString())
-        }
-        if (binding.layoutEdit.chip8.isChecked) {
-            tagList.add(binding.layoutEdit.chip8.text.toString())
-        }
-        if (binding.layoutEdit.chip9.isChecked) {
-            tagList.add(binding.layoutEdit.chip9.text.toString())
-        }
-        if (binding.layoutEdit.chip10.isChecked) {
-            tagList.add(binding.layoutEdit.chip10.text.toString())
-        }
-        return tagList
     }
 }

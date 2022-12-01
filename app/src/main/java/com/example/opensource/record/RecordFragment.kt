@@ -1,4 +1,4 @@
-package com.example.opensource.util
+package com.example.opensource.record
 
 import android.app.Dialog
 import android.content.Intent
@@ -12,12 +12,15 @@ import com.example.opensource.R
 import com.example.opensource.data.remote.RecordData
 import com.example.opensource.databinding.FragmentRecordBinding
 import com.example.opensource.databinding.ViewUserRecordBinding
-import com.example.opensource.modify.RecordModifyActivity
 
 
 class RecordFragment : DialogFragment() {
 
     private lateinit var binding: FragmentRecordBinding
+
+    companion object {
+        const val RECORD_DATA = "recordData"
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return Dialog(requireContext(), R.style.DisableDialogBackground)
@@ -80,26 +83,6 @@ class RecordFragment : DialogFragment() {
             layout.chip3.text = tagList[2]
             layout.chip3.visibility = View.VISIBLE
         }
-//        when (tagList.size) {
-//            1 -> {
-//                layout.chip1.text = tagList[0]
-//                layout.chip1.visibility = View.VISIBLE
-//            }
-//            2 -> {
-//                layout.chip1.text = tagList[0]
-//                layout.chip2.text = tagList[1]
-//                layout.chip1.visibility = View.VISIBLE
-//                layout.chip2.visibility = View.VISIBLE
-//            }
-//            else -> {
-//                layout.chip1.text = tagList[0]
-//                layout.chip2.text = tagList[1]
-//                layout.chip3.text = tagList[2]
-//                layout.chip1.visibility = View.VISIBLE
-//                layout.chip2.visibility = View.VISIBLE
-//                layout.chip3.visibility = View.VISIBLE
-//            }
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,6 +100,19 @@ class RecordFragment : DialogFragment() {
         binding.tvModify.setOnClickListener {
             // start recordModifyActivity
             val intent = Intent(requireContext(), RecordModifyActivity::class.java)
+            val recordData = RecordData(
+                id = 1,
+                username = "최유빈",
+                imageUrl = "https://avatars.githubusercontent.com/u/48249505?v=4",
+                stars = 5,
+                comment = "좋아요",
+                heart = true,
+                recordDate = "2021. 08. 01",
+                temperature = 25.0,
+                icon = 1,
+                tag = listOf("쌀쌀해요", "추워요"),
+            ) // dummy
+            intent.putExtra(RECORD_DATA, recordData)
             startActivity(intent)
             dismiss()
         }
