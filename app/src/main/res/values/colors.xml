@@ -23,4 +23,6 @@
 
     <color name="chip_unselected">#E1F1FE</color>
     <color name="chip_selected">#002171</color>
+
+    <color name="bt_edit">#00257E</color>
 </resources>
