@@ -35,11 +35,15 @@ class HomeRecordRvAdapter(private val context: Context) :
             Glide.with(context)
                 .load(data.imageUrl)
                 .into(binding.ivClothes)
-            binding.tvDate.text = data.createdAt
+            binding.tvDate.text = data.recordDate
             if (data.heart)
-                binding.ivHeart.setImageResource(R.drawable.heart_full)
+                binding.ivHeart.setImageResource(R.drawable.heart_white_line)
             else
                 binding.ivHeart.setImageResource(R.drawable.heart_empty)
+
+            binding.root.setOnClickListener {
+                itemClickListener.onItemClick(it, adapterPosition)
+            }
         }
     }
 
@@ -53,10 +57,6 @@ class HomeRecordRvAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: HomeRecordViewHolder, position: Int) {
         holder.onBind(recordList[position])
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(it, position)
-        }
     }
 
     override fun getItemCount(): Int = recordList.size

@@ -12,7 +12,8 @@ data class HomeRecordResponse(
         val stars: Int,
         val comment: String,
         val heart: Boolean,
-        val createdAt: String,
-        val temperature: Int
+        val recordDate: String,
+        val temperature: Float,
+        val icon: Int,
     )
 }

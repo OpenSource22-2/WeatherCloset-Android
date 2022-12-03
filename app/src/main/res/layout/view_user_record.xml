@@ -5,13 +5,37 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="15dp">
 
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2022. 5. 20"
+        android:textColor="@color/text_gray"
+        android:textSize="14sp"
+        android:textStyle="italic|bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/iv_record"
         android:layout_width="160dp"
         android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:scaleType="fitXY"
         android:src="@drawable/dummy_item_home"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_date" />
+
+    <ImageView
+        android:id="@+id/iv_heart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:src="@drawable/heart_white_line"
+        app:layout_constraintEnd_toEndOf="@id/iv_record"
+        app:layout_constraintTop_toTopOf="@id/iv_record" />
+
 
     <ImageView
         android:id="@+id/iv_heart"
@@ -41,6 +65,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginTop="5dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_02d"
         app:layout_constraintStart_toStartOf="@id/tv_temperature_title"
         app:layout_constraintTop_toBottomOf="@id/tv_temperature_title" />
@@ -49,8 +74,7 @@
         android:id="@+id/tv_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:text="0˚"
+        android:text="16˚"
         android:textColor="@color/text_gray"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -113,9 +137,10 @@
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="쌀쌀해요"
+            android:text="선선해요"
             android:textColor="@color/white"
             android:textSize="11sp"
+            android:visibility="gone"
             app:chipBackgroundColor="@color/chip_selected"
             app:chipCornerRadius="6dp"
             app:textEndPadding="7dp"
@@ -129,6 +154,7 @@
             android:text="일교차가 커요"
             android:textColor="@color/white"
             android:textSize="11sp"
+            android:visibility="gone"
             app:chipBackgroundColor="@color/chip_selected"
             app:chipCornerRadius="6dp"
             app:textEndPadding="7dp"
@@ -142,6 +168,7 @@
             android:text="바람이 불어요"
             android:textColor="@color/white"
             android:textSize="11sp"
+            android:visibility="gone"
             app:chipBackgroundColor="@color/chip_selected"
             app:chipCornerRadius="6dp"
             app:textEndPadding="7dp"
@@ -167,7 +194,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="오늘의 기록"
+        android:text="오늘 너무 추웠지만, 가디건과 청치마의 조합이 좋았다:)"
         android:textColor="@color/text_gray"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tv_memo_title"

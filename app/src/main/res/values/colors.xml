@@ -25,4 +25,5 @@
     <color name="chip_selected">#002171</color>
 
     <color name="bt_edit">#00257E</color>
+    <color name="bt_delete_text">#ef4848</color>
 </resources>

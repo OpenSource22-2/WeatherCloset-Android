@@ -14,9 +14,11 @@ import androidx.fragment.app.Fragment
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
+import com.example.opensource.data.remote.RecordData
+import com.example.opensource.data.remote.RecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
-import com.example.opensource.util.RecordModifyFragment
+import com.example.opensource.record.RecordFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -43,6 +45,8 @@ class HomeFragment : Fragment() {
     private lateinit var mLocationManager: LocationManager
     private lateinit var mLocationListener: LocationListener
 
+    private lateinit var recordData: RecordData
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,13 +55,18 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 //      TODO: initPopUp()
-        setData() // 서버 통신
-//        getRecordList() // dummy
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+        setData() // 서버 통신
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         getWeatherInCurrentLocation()
     }
 
@@ -91,71 +100,40 @@ class HomeFragment : Fragment() {
         clickRecordItemView()
     }
 
-    private fun getRecordList() {
+    fun getRecordInfo(recordId: Int) {
+        val call: Call<RecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.getRecord(recordId)
 
-        val data = ArrayList<HomeRecordResponse.HomeRecordData>()
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = false,
-                temperature = 11
-            )
-        )
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150343_.png?alt=media&token=87d29947-38ea-4344-afda-dbd59c98ed1d",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = true,
-                temperature = 11
-            )
-        )
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = true,
-                temperature = 11
-            )
-        )
-        data.add(
-            HomeRecordResponse.HomeRecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-                stars = 5,
-                comment = "comment",
-                createdAt = "2022-11-18",
-                heart = true,
-                temperature = 11
-            )
-        )
+        call.enqueue(object : Callback<RecordResponse> {
+            override fun onResponse(
+                call: Call<RecordResponse>,
+                response: Response<RecordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "onResponse: ${response.body()}")
+                    recordData = response.body()?.data!!
+                    // show dialog
+                    val dialog = RecordFragment(recordData)
+                    dialog.show(childFragmentManager, "dialog")
+                } else {
+                    Log.e(TAG, "onResponse: response error: $response")
+                }
+            }
 
-        recordRvAdapter = HomeRecordRvAdapter(requireContext())
-        recordRvAdapter.addItems(data)
-        recordRvAdapter.notifyDataSetChanged()
-        binding.rvRecord.adapter = recordRvAdapter
+            override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+            }
+        })
     }
+
 
     private fun clickRecordItemView() {
         recordRvAdapter.setItemClickListener(object :
             HomeRecordRvAdapter.OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
-                // show dialog
-                val dialog = RecordModifyFragment()
-                dialog.show(childFragmentManager, "dialog")
+                // 기록 단건 조회
+                val recordId = recordRvAdapter.recordList[position].id
+                getRecordInfo(recordId)
             }
         })
     }
@@ -163,7 +141,6 @@ class HomeFragment : Fragment() {
     private fun getWeatherInCurrentLocation() {
         mLocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
         mLocationListener = LocationListener { p0 ->
             val params = RequestParams()
             params.put("lat", p0.latitude)
@@ -171,7 +148,6 @@ class HomeFragment : Fragment() {
             params.put("appid", API_KEY)
             doNetworking(params)
         }
-
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -205,7 +181,6 @@ class HomeFragment : Fragment() {
     private fun doNetworking(params: RequestParams) {
         val client = AsyncHttpClient()
 
-        Log.d(TAG, "doNetworking: start")
         client.get(WEATHER_URL, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(
                 statusCode: Int,
