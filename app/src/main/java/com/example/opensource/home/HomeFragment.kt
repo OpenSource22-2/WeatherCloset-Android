@@ -55,9 +55,12 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 //      TODO: initPopUp()
-        setData() // 서버 통신
-//        getRecordList() // dummy
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setData() // 서버 통신
     }
 
     override fun onResume() {
@@ -98,8 +101,6 @@ class HomeFragment : Fragment() {
     fun getRecordInfo(recordId: Int) {
         val call: Call<RecordResponse> =
             RetrofitObject.provideWeatherClosetApi.getRecord(recordId)
-
-        var result = false
 
         call.enqueue(object : Callback<RecordResponse> {
             override fun onResponse(

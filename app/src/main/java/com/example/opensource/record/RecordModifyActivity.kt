@@ -261,13 +261,33 @@ class RecordModifyActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteRecord() {
+        val call = RetrofitObject.provideWeatherClosetApi.deleteRecord(recordId)
+        call.enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(
+                call: Call<BaseResponse>,
+                response: Response<BaseResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "onResponse: 삭제 성공")
+                    finish()
+                } else {
+                    Log.d(TAG, "onResponse: 삭제 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure: ${t.message}")
+            }
+        })
+    }
+
     private fun clickBtnDelete() {
         binding.btnDelete.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("삭제하시겠습니까?")
             builder.setPositiveButton("확인") { _, _ ->
-                // TODO: 삭제 api 호출
-                
+                deleteRecord()
                 finish()
             }
             builder.setNegativeButton("취소") { _, _ -> }

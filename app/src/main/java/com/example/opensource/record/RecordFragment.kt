@@ -15,7 +15,7 @@ import com.example.opensource.databinding.FragmentRecordBinding
 import com.example.opensource.databinding.ViewUserRecordBinding
 
 
-class RecordFragment(private val recordData: RecordData) : DialogFragment(){
+class RecordFragment(private val recordData: RecordData) : DialogFragment() {
 
     private lateinit var binding: FragmentRecordBinding
 
@@ -47,6 +47,8 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment(){
         layout.rbStar.rating = recordData.stars.toFloat()
 //        setTag(layout, recordData.tag) // TODO: tag
         layout.tvMemo.text = recordData.comment
+        layout.tvTemperature.text = recordData.temperature.toString()
+        setHeart()
     }
 
     private fun setIcon(layout: ViewUserRecordBinding, icon: Int) {
@@ -71,6 +73,14 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment(){
         if (tagList.size >= 3) {
             layout.chip3.text = tagList[2]
             layout.chip3.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setHeart() {
+        if (recordData.heart) {
+            binding.layoutRecord.ivHeart.setImageResource(R.drawable.heart_white_line)
+        } else {
+            binding.layoutRecord.ivHeart.setImageResource(R.drawable.heart_empty)
         }
     }
 

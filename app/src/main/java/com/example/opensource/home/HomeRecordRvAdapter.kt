@@ -37,7 +37,7 @@ class HomeRecordRvAdapter(private val context: Context) :
                 .into(binding.ivClothes)
             binding.tvDate.text = data.recordDate
             if (data.heart)
-                binding.ivHeart.setImageResource(R.drawable.heart_full)
+                binding.ivHeart.setImageResource(R.drawable.heart_white_line)
             else
                 binding.ivHeart.setImageResource(R.drawable.heart_empty)
 

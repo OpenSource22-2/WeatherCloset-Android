@@ -38,4 +38,11 @@ interface WeatherClosetApi {
     fun getRecord(
         @Path("recordId") recordId: Int
     ): Call<RecordResponse>
+
+    // 기록 삭제
+    @Headers("Content-type:application/json")
+    @DELETE("record/{recordId}")
+    fun deleteRecord(
+        @Path("recordId") recordId: Int
+    ): Call<BaseResponse>
 }
