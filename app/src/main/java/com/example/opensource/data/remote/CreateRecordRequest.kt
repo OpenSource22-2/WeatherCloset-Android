@@ -4,5 +4,7 @@ data class CreateRecordRequest(
     val comment: String,
     val heart: Boolean,
     val imageUrl: String,
-    val stars: Int
+    val stars: Int,
+    val recordDate: String,
+//    val tag: List<String>,    // TODO: 태그 추가 기능 추가
 )
