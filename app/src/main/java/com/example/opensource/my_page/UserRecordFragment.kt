@@ -1,14 +1,17 @@
 package com.example.opensource.my_page
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.opensource.R
 
-
 class UserRecordFragment : Fragment() {
+
+    companion object {
+        const val TAG = "USER_RECORD_FRAGMENT"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

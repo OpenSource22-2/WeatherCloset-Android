@@ -16,6 +16,7 @@ import com.example.opensource.data.remote.RecordData
 import com.example.opensource.databinding.FragmentRecordBinding
 import com.example.opensource.databinding.ViewUserRecordBinding
 import com.example.opensource.my_page.MyPageLikeFragment
+import com.example.opensource.my_page.UserRecordFragment
 import com.example.opensource.util.setOnSinglePostClickListener
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,18 +45,28 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         // Inflate the layout for this fragment
         binding = FragmentRecordBinding.inflate(inflater, container, false)
 
-        getState()
         setData()
+        getState()
         clickModifyBtn()
         return binding.root
     }
 
     private fun getState() {
         state = this.tag!!
-        if (state == MyPageLikeFragment.TAG) {
+        if (state == MyPageLikeFragment.TAG || state == UserRecordFragment.TAG) {
             binding.tvModify.visibility = View.GONE
+            setUserName()
             clickIvHeart()
         }
+    }
+
+    private fun setUserName() {
+        val date = recordData.recordDate.replaceFirst(".", "년")
+            .replaceFirst(".", "월")
+            .plus("일")
+        val userNameDate = recordData.username + "님의 " + date
+        binding.layoutRecord.tvUserNameDate.text = userNameDate
+        binding.layoutRecord.tvDate.visibility = View.INVISIBLE
     }
 
     private fun modifyHeart(heart: Boolean) {
