@@ -75,7 +75,6 @@ class MyPageLikeFragment : Fragment() {
         recordRvAdapter.addItems(data)
         recordRvAdapter.notifyDataSetChanged()
         binding.rvLike.adapter = recordRvAdapter
-        // itemDecoration
         clickRecordItemView()
     }
 

@@ -55,7 +55,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
 
     private fun getState() {
         state = this.tag!!
-        if (state == MyPageLikeFragment.TAG || state == MyPageRecordFragment.TAG) {
+        if (state == MyPageLikeFragment.TAG) {
             binding.tvModify.visibility = View.GONE
             setUserName()
             clickIvHeart()
