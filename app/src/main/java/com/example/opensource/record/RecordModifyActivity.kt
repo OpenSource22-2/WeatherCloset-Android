@@ -52,7 +52,6 @@ class RecordModifyActivity : AppCompatActivity() {
     var storage = FirebaseStorage.getInstance() // 파이어베이스 저장소 객체
     private lateinit var reference: StorageReference // 저장소 레퍼런스 객체 : storage 를 사용해 저장 위치를 설정
 
-
     private var heartState: Boolean = false
     private var recordDate = ""
     private var changeImg = false
@@ -169,8 +168,18 @@ class RecordModifyActivity : AppCompatActivity() {
 //            }
             postUri = recordData?.imageUrl.toString()
             recordDate = recordData?.recordDate.toString()
-            heartState = recordData?.heart ?: false
+            setHeart(recordData?.heart)
             recordId = recordData?.id!!
+        }
+    }
+
+    private fun setHeart(heart: Boolean?) {
+        heartState = if (heart == true) {
+            binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_white_line)
+            true
+        } else {
+            binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_empty)
+            false
         }
     }
 

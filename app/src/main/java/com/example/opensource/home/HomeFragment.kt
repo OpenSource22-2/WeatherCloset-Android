@@ -60,11 +60,13 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        Log.d(TAG, "onStart: ")
         setData() // 서버 통신
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         getWeatherInCurrentLocation()
     }
 
