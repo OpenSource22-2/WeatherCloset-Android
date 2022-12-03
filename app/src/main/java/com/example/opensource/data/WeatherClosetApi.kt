@@ -1,11 +1,10 @@
 package com.example.opensource.data
 
-import com.example.opensource.data.remote.BaseResponse
-import com.example.opensource.data.remote.CreateRecordRequest
-import com.example.opensource.data.remote.HomeRecordResponse
-import com.example.opensource.data.remote.RecordResponse
+import com.example.opensource.data.remote.*
 import retrofit2.Call
 import retrofit2.http.*
+import java.time.Month
+import java.time.Year
 
 interface WeatherClosetApi {
 
@@ -45,4 +44,23 @@ interface WeatherClosetApi {
     fun deleteRecord(
         @Path("recordId") recordId: Int
     ): Call<BaseResponse>
+
+    // 서치 기록 조회
+    @Headers("Content-type:application/json")
+    @GET("search")
+    fun getSearchRecord(
+        @Query("minTemperature") minTemperature: Double,
+        @Query("maxTemperature") maxTemperature: Double
+    ): Call<SearchRecordResponse>
+
+    // 캘린더 기록 조회
+    @Headers("Content-type:application/json")
+    @GET("calendar/{memberId}")
+    fun getCalendarRecord(
+        @Path("memberId") memberId: Int,
+        @Query("year") year: Int,
+        @Query("month") month: Int
+    ): Call<CalendarRecordResponse>
+
+
 }
