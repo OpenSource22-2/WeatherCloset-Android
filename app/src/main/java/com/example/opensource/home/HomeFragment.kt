@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
+import com.example.opensource.data.remote.RecordData
+import com.example.opensource.data.remote.RecordResponse
 import com.example.opensource.data.remote.WeatherData
 import com.example.opensource.databinding.FragmentHomeBinding
 import com.example.opensource.record.RecordFragment
@@ -42,6 +44,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var mLocationManager: LocationManager
     private lateinit var mLocationListener: LocationListener
+
+    private lateinit var recordData: RecordData
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,71 +95,42 @@ class HomeFragment : Fragment() {
         clickRecordItemView()
     }
 
-//    private fun getRecordList() {
-//
-//        val data = ArrayList<HomeRecordResponse.HomeRecordData>()
-//        data.add(
-//            HomeRecordResponse.HomeRecordData(
-//                id = 1,
-//                username = "최유빈",
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                stars = 5,
-//                comment = "comment",
-//                recordDate = "2022. 11. 18",
-//                heart = false,
-//                temperature = 11.toFloat(),
-//            )
-//        )
-//        data.add(
-//            HomeRecordResponse.HomeRecordData(
-//                id = 1,
-//                username = "최유빈",
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150343_.png?alt=media&token=87d29947-38ea-4344-afda-dbd59c98ed1d",
-//                stars = 5,
-//                comment = "comment",
-//                recordDate = "2022. 11. 18",
-//                heart = true,
-//                temperature = 11.toFloat(),
-//            )
-//        )
-//        data.add(
-//            HomeRecordResponse.HomeRecordData(
-//                id = 1,
-//                username = "최유빈",
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-//                stars = 5,
-//                comment = "comment",
-//                recordDate = "2022. 11. 18",
-//                heart = true,
-//                temperature = 11.toFloat(),
-//            )
-//        )
-//        data.add(
-//            HomeRecordResponse.HomeRecordData(
-//                id = 1,
-//                username = "최유빈",
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150442_.png?alt=media&token=8ad275e0-8258-4e11-bad2-23b6ddd0c219",
-//                stars = 5,
-//                comment = "comment",
-//                recordDate = "2022. 11. 18",
-//                heart = true,
-//                temperature = 11.toFloat(),
-//            )
-//        )
-//
-//        recordRvAdapter = HomeRecordRvAdapter(requireContext())
-//        recordRvAdapter.addItems(data)
-//        recordRvAdapter.notifyDataSetChanged()
-//        binding.rvRecord.adapter = recordRvAdapter
-//    }
+    fun getRecordInfo(recordId: Int) {
+        val call: Call<RecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.getRecord(recordId)
+
+        var result = false
+
+        call.enqueue(object : Callback<RecordResponse> {
+            override fun onResponse(
+                call: Call<RecordResponse>,
+                response: Response<RecordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "onResponse: ${response.body()}")
+                    recordData = response.body()?.data!!
+                    // show dialog
+                    val dialog = RecordFragment(recordData)
+                    dialog.show(childFragmentManager, "dialog")
+                } else {
+                    Log.e(TAG, "onResponse: response error: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+            }
+        })
+    }
+
 
     private fun clickRecordItemView() {
         recordRvAdapter.setItemClickListener(object :
             HomeRecordRvAdapter.OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
-                // show dialog
-                val dialog = RecordFragment()
-                dialog.show(childFragmentManager, "dialog")
+                // 기록 단건 조회
+                val recordId = recordRvAdapter.recordList[position].id
+                getRecordInfo(recordId)
             }
         })
     }

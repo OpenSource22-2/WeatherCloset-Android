@@ -14,5 +14,5 @@ data class RecordData(
     val recordDate: String,
     val temperature: Double,
     val icon: Int,
-    val tag: List<String>,
+//    val tag: List<String>,    // TODO: tag
 ) : Parcelable

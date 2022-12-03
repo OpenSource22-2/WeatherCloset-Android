@@ -3,6 +3,7 @@ package com.example.opensource.record
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,7 @@ import com.example.opensource.databinding.FragmentRecordBinding
 import com.example.opensource.databinding.ViewUserRecordBinding
 
 
-class RecordFragment : DialogFragment() {
+class RecordFragment(private val recordData: RecordData) : DialogFragment(){
 
     private lateinit var binding: FragmentRecordBinding
 
@@ -39,24 +40,12 @@ class RecordFragment : DialogFragment() {
     }
 
     private fun setData() {
-        val recordData = RecordData(
-            id = 1,
-            username = "최유빈",
-            imageUrl = "https://avatars.githubusercontent.com/u/48249505?v=4",
-            stars = 5,
-            comment = "좋아요",
-            heart = true,
-            recordDate = "2021. 08. 01",
-            temperature = 25.0,
-            icon = 1,
-            tag = listOf("쌀쌀해요", "추워요"),
-        ) // dummy
         val layout = binding.layoutRecord
         layout.tvDate.text = recordData.recordDate
         Glide.with(this).load(recordData.imageUrl).into(layout.ivRecord)
         setIcon(layout, recordData.icon)
         layout.rbStar.rating = recordData.stars.toFloat()
-        setTag(layout, recordData.tag)
+//        setTag(layout, recordData.tag) // TODO: tag
         layout.tvMemo.text = recordData.comment
     }
 
@@ -98,20 +87,8 @@ class RecordFragment : DialogFragment() {
 
     private fun clickModifyBtn() {
         binding.tvModify.setOnClickListener {
-            // start recordModifyActivity
             val intent = Intent(requireContext(), RecordModifyActivity::class.java)
-            val recordData = RecordData(
-                id = 1,
-                username = "최유빈",
-                imageUrl = "https://avatars.githubusercontent.com/u/48249505?v=4",
-                stars = 5,
-                comment = "좋아요",
-                heart = true,
-                recordDate = "2021. 08. 01",
-                temperature = 25.0,
-                icon = 1,
-                tag = listOf("쌀쌀해요", "추워요"),
-            ) // dummy
+            Log.d("TAG", "clickModifyBtn: $recordData")
             intent.putExtra(RECORD_DATA, recordData)
             startActivity(intent)
             dismiss()

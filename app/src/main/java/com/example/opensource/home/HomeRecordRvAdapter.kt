@@ -40,6 +40,10 @@ class HomeRecordRvAdapter(private val context: Context) :
                 binding.ivHeart.setImageResource(R.drawable.heart_full)
             else
                 binding.ivHeart.setImageResource(R.drawable.heart_empty)
+
+            binding.root.setOnClickListener {
+                itemClickListener.onItemClick(it, adapterPosition)
+            }
         }
     }
 
@@ -53,10 +57,6 @@ class HomeRecordRvAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: HomeRecordViewHolder, position: Int) {
         holder.onBind(recordList[position])
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(it, position)
-        }
     }
 
     override fun getItemCount(): Int = recordList.size

@@ -10,10 +10,10 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.opensource.R
-import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.BaseResponse
 import com.example.opensource.data.remote.CreateRecordRequest
@@ -44,6 +44,7 @@ class RecordModifyActivity : AppCompatActivity() {
     private var imagePath = ""
     private var postUri = ""
     private lateinit var selectedChipList: Array<Boolean>
+    private var recordId: Int = 0
 
     @SuppressLint("SimpleDateFormat")
     var imageDate: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -66,6 +67,7 @@ class RecordModifyActivity : AppCompatActivity() {
         clickIvGallery()
         clickHeart()
         clickBtnSave()
+        clickBtnDelete()
         setData()
     }
 
@@ -151,6 +153,7 @@ class RecordModifyActivity : AppCompatActivity() {
     private fun setData() {
         intent.let {
             val recordData = it.getParcelableExtra<RecordData>(RECORD_DATA)
+            Log.d(TAG, "setData: recordData: $recordData")
             val layout = binding.layoutEdit
             layout.tvSelectDate.text = recordData?.recordDate
             Glide.with(this).load(recordData?.imageUrl).into(layout.ivGallery)
@@ -161,12 +164,13 @@ class RecordModifyActivity : AppCompatActivity() {
             layout.rbStar.rating = recordData?.stars?.toFloat() ?: 0f
             layout.rbStar.stepSize = 1f
             layout.etMemo.setText(recordData?.comment)
-            for (i in recordData?.tag!!) {
-                setTag(layout, i)
-            }
+//            for (i in recordData?.tag!!) {    // TODO: 태그 불러오기
+//                setTag(layout, i)
+//            }
             postUri = recordData?.imageUrl.toString()
             recordDate = recordData?.recordDate.toString()
             heartState = recordData?.heart ?: false
+            recordId = recordData?.id!!
         }
     }
 
@@ -254,6 +258,20 @@ class RecordModifyActivity : AppCompatActivity() {
                 binding.layoutEdit.ivHeart.setImageResource(R.drawable.heart_white_line)
                 true
             }
+        }
+    }
+
+    private fun clickBtnDelete() {
+        binding.btnDelete.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("삭제하시겠습니까?")
+            builder.setPositiveButton("확인") { _, _ ->
+                // TODO: 삭제 api 호출
+                
+                finish()
+            }
+            builder.setNegativeButton("취소") { _, _ -> }
+            builder.show()
         }
     }
 
@@ -367,7 +385,7 @@ class RecordModifyActivity : AppCompatActivity() {
         )
 
         val call: Call<BaseResponse> =
-            RetrofitObject.provideWeatherClosetApi.createRecord(Secret.memberId, requestRecordData)
+            RetrofitObject.provideWeatherClosetApi.updateRecord(recordId, requestRecordData)
 
         call.enqueue(object : Callback<BaseResponse> {
             override fun onResponse(
