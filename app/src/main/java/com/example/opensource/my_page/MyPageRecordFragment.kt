@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.opensource.R
 
-class UserRecordFragment : Fragment() {
+class MyPageRecordFragment : Fragment() {
 
     companion object {
         const val TAG = "USER_RECORD_FRAGMENT"

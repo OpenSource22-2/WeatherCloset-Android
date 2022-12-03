@@ -17,7 +17,7 @@ import com.example.opensource.data.remote.RecordData
 import com.example.opensource.databinding.FragmentRecordBinding
 import com.example.opensource.databinding.ViewUserRecordBinding
 import com.example.opensource.my_page.MyPageLikeFragment
-import com.example.opensource.my_page.UserRecordFragment
+import com.example.opensource.my_page.MyPageRecordFragment
 import com.example.opensource.util.setOnSinglePostClickListener
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,7 +32,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
     private lateinit var state: String
 
     companion object {
-        const val RECORD_DATA = "recordData"
+        const val RECORD_DATA = "RECORD_DATA"
         const val TAG = "RECORD_FRAGMENT"
     }
 
@@ -55,7 +55,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
 
     private fun getState() {
         state = this.tag!!
-        if (state == MyPageLikeFragment.TAG || state == UserRecordFragment.TAG) {
+        if (state == MyPageLikeFragment.TAG || state == MyPageRecordFragment.TAG) {
             binding.tvModify.visibility = View.GONE
             setUserName()
             clickIvHeart()
