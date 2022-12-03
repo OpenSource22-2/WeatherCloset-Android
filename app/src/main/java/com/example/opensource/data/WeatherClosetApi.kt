@@ -45,4 +45,13 @@ interface WeatherClosetApi {
     fun deleteRecord(
         @Path("recordId") recordId: Int
     ): Call<BaseResponse>
+
+    // 좋아요
+    @Headers("Content-type:application/json")
+    @PUT("record/like/{recordId}")
+    fun likeRecord(
+        @Path("recordId") recordId: Int,
+        @Body body: Boolean
+    ): Call<BaseResponse>
+
 }

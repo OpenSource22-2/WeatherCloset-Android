@@ -9,7 +9,6 @@ import com.example.opensource.R
 import com.example.opensource.databinding.FragmentMyPageBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
-
 class MyPageFragment : Fragment() {
 
     private lateinit var binding: FragmentMyPageBinding

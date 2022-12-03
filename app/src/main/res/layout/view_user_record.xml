@@ -32,10 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:src="@drawable/heart_white_line"
+        android:background="@drawable/selector_heart"
         app:layout_constraintEnd_toEndOf="@id/iv_record"
         app:layout_constraintTop_toTopOf="@id/iv_record" />
-
 
     <!-- 이 날의 평균 기온 -->
     <TextView
