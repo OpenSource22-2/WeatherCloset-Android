@@ -105,7 +105,15 @@ class SaveFragment : BottomSheetDialogFragment() {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    recordDate = "$year. ${month + 1}. $dayOfMonth"
+                    recordDate = if (month < 10 && dayOfMonth < 10) {
+                        "$year. 0${month + 1}. 0$dayOfMonth"
+                    } else if (month < 10) {
+                        "$year. 0${month + 1}. $dayOfMonth"
+                    } else if (dayOfMonth < 10) {
+                        "$year. ${month + 1}. 0$dayOfMonth"
+                    } else {
+                        "$year. ${month + 1}. $dayOfMonth"
+                    }
                     binding.layoutEdit.tvSelectDate.text = recordDate
                 }
             val datePickerDialog = DatePickerDialog(
@@ -355,6 +363,7 @@ class SaveFragment : BottomSheetDialogFragment() {
 //            tag = getTagList(),
         )
 
+        Log.d(TAG, "saveRecord: requestRecordData: $requestRecordData")
         val call: Call<RecordResponse> =
             RetrofitObject.provideWeatherClosetApi.createRecord(Secret.memberId, requestRecordData)
 
@@ -371,7 +380,7 @@ class SaveFragment : BottomSheetDialogFragment() {
             }
 
             override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
-                TODO("Not yet implemented")
+                Log.e(TAG, "onFailure: $t")
             }
         })
     }

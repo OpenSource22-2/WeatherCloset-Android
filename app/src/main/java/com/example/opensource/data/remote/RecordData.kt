@@ -12,7 +12,7 @@ data class RecordData(
     val comment: String,
     val heart: Boolean,
     val recordDate: String,
-    val temperature: Double,
-    val icon: Int,
+    var temperature: Double,
+    var icon: Int,
 //    val tag: List<String>,    // TODO: tag
 ) : Parcelable

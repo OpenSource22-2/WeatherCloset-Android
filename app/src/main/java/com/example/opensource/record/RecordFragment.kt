@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
+import com.example.opensource.MySharedPreference
 import com.example.opensource.R
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.BaseResponse
@@ -21,6 +22,7 @@ import com.example.opensource.util.setOnSinglePostClickListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 
 
 class RecordFragment(private val recordData: RecordData) : DialogFragment() {
@@ -107,6 +109,9 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
     private fun setData() {
         val layout = binding.layoutRecord
         layout.tvDate.text = recordData.recordDate
+        if (recordData.icon == -1) {
+            setTodayWeather()
+        }
         Glide.with(this).load(recordData.imageUrl).into(layout.ivRecord)
         setIcon(layout, recordData.icon)
         layout.rbStar.rating = recordData.stars.toFloat()
@@ -115,6 +120,14 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         layout.tvTemperature.text = recordData.temperature.toString()
         layout.ivHeart.isSelected = recordData.heart
         setHeart()
+    }
+
+    private fun setTodayWeather() {
+        val todayDate = SimpleDateFormat("yyyy. MM. dd").format(System.currentTimeMillis())
+        if (recordData.recordDate == todayDate) {
+            recordData.icon = MySharedPreference.getIcon(requireContext())
+            recordData.temperature = MySharedPreference.getTemperature(requireContext()).toDouble()
+        }
     }
 
     private fun setIcon(layout: ViewUserRecordBinding, icon: Int) {
