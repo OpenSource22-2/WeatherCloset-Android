@@ -54,6 +54,7 @@ class RecordModifyActivity : AppCompatActivity() {
 
     private var heartState: Boolean = false
     private var recordDate = ""
+    private var changeImg = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,6 +164,9 @@ class RecordModifyActivity : AppCompatActivity() {
             for (i in recordData?.tag!!) {
                 setTag(layout, i)
             }
+            postUri = recordData?.imageUrl.toString()
+            recordDate = recordData?.recordDate.toString()
+            heartState = recordData?.heart ?: false
         }
     }
 
@@ -233,6 +237,7 @@ class RecordModifyActivity : AppCompatActivity() {
 
     private fun clickIvGallery() {
         binding.layoutEdit.ivGallery.setOnClickListener {
+            changeImg = true
             intent = Intent(Intent.ACTION_PICK)
             intent.type = MediaStore.Images.Media.CONTENT_TYPE
             intent.type = "image/*"
@@ -275,13 +280,18 @@ class RecordModifyActivity : AppCompatActivity() {
 
     private fun clickBtnSave() {
         binding.tvSave.setOnClickListener {
-            if (imagePath.isNotEmpty() && imgFrom >= 100
-                && binding.layoutEdit.etMemo.text?.isNotEmpty() == true
+            if (binding.layoutEdit.etMemo.text?.isNotEmpty() == true
                 && binding.layoutEdit.rbStar.rating > 0
-                && countSelectedChips() > 0
-                && validDate()
-            )
-                uploadImg()
+                && countSelectedChips() > 0 && validDate()
+            ) {
+                if (changeImg) {
+                    uploadImg()
+                } else {
+                    saveRecord()
+                }
+            } else {
+                Toast.makeText(this, "모든 항목을 입력해주세요.", Toast.LENGTH_SHORT).show() // test
+            }
         }
     }
 
@@ -343,7 +353,6 @@ class RecordModifyActivity : AppCompatActivity() {
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
         }
-        finish()
     }
 
     // 서버에 데이터 전송(POST)
@@ -354,7 +363,7 @@ class RecordModifyActivity : AppCompatActivity() {
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
             recordDate = recordDate,
-            tag = getTagList()
+//            tag = getTagList()
         )
 
         val call: Call<BaseResponse> =
@@ -376,40 +385,6 @@ class RecordModifyActivity : AppCompatActivity() {
                 Log.e(TAG, "onFailure: $t")
             }
         })
-    }
-
-    private fun getTagList(): List<String> {
-        val tagList = mutableListOf<String>()
-        if (binding.layoutEdit.chip1.isChecked) {
-            tagList.add(binding.layoutEdit.chip1.text.toString())
-        }
-        if (binding.layoutEdit.chip2.isChecked) {
-            tagList.add(binding.layoutEdit.chip2.text.toString())
-        }
-        if (binding.layoutEdit.chip3.isChecked) {
-            tagList.add(binding.layoutEdit.chip3.text.toString())
-        }
-        if (binding.layoutEdit.chip4.isChecked) {
-            tagList.add(binding.layoutEdit.chip4.text.toString())
-        }
-        if (binding.layoutEdit.chip5.isChecked) {
-            tagList.add(binding.layoutEdit.chip5.text.toString())
-        }
-        if (binding.layoutEdit.chip6.isChecked) {
-            tagList.add(binding.layoutEdit.chip6.text.toString())
-        }
-        if (binding.layoutEdit.chip7.isChecked) {
-            tagList.add(binding.layoutEdit.chip7.text.toString())
-        }
-        if (binding.layoutEdit.chip8.isChecked) {
-            tagList.add(binding.layoutEdit.chip8.text.toString())
-        }
-        if (binding.layoutEdit.chip9.isChecked) {
-            tagList.add(binding.layoutEdit.chip9.text.toString())
-        }
-        if (binding.layoutEdit.chip10.isChecked) {
-            tagList.add(binding.layoutEdit.chip10.text.toString())
-        }
-        return tagList
+        finish()
     }
 }

@@ -352,7 +352,7 @@ class SaveFragment : BottomSheetDialogFragment() {
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
             recordDate = recordDate,
-            tag = getTagList(),
+//            tag = getTagList(),
         )
 
         val call: Call<BaseResponse> =
