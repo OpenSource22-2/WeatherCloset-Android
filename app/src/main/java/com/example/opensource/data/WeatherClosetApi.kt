@@ -16,9 +16,9 @@ interface WeatherClosetApi {
         @Body body: CreateRecordRequest
     ): Call<BaseResponse>
 
-    // 기록 조회
+    // 기록 전체 조회 (HOME FRAGMENT)
     @Headers("Content-type:application/json")
-    @GET("record/{memberId}")
+    @GET("member/{memberId}")
     fun getRecordList(
         @Path("memberId") memberId: Int
     ): Call<HomeRecordResponse>
