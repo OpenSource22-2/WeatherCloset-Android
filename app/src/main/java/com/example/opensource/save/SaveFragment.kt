@@ -19,8 +19,8 @@ import com.bumptech.glide.Glide
 import com.example.opensource.R
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
-import com.example.opensource.data.remote.BaseResponse
 import com.example.opensource.data.remote.CreateRecordRequest
+import com.example.opensource.data.remote.RecordResponse
 import com.example.opensource.databinding.FragmentSaveBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -355,13 +355,13 @@ class SaveFragment : BottomSheetDialogFragment() {
 //            tag = getTagList(),
         )
 
-        val call: Call<BaseResponse> =
+        val call: Call<RecordResponse> =
             RetrofitObject.provideWeatherClosetApi.createRecord(Secret.memberId, requestRecordData)
 
-        call.enqueue(object : Callback<BaseResponse> {
+        call.enqueue(object : Callback<RecordResponse> {
             override fun onResponse(
-                call: Call<BaseResponse>,
-                response: Response<BaseResponse>
+                call: Call<RecordResponse>,
+                response: Response<RecordResponse>
             ) {
                 if (response.isSuccessful) {
                     Log.d(TAG, "onResponse: success : ${response.body()}")
@@ -370,8 +370,8 @@ class SaveFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                Log.e(TAG, "onFailure: $t")
+            override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
+                TODO("Not yet implemented")
             }
         })
     }

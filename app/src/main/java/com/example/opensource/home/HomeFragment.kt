@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.example.opensource.MySharedPreference
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
@@ -211,6 +212,9 @@ class HomeFragment : Fragment() {
         val mFormat = SimpleDateFormat("yyyy. MM. dd")
         val mDate = System.currentTimeMillis()
         binding.tvTodayDate.text = mFormat.format(mDate).toString()
+
+        MySharedPreference.setTemperature(requireContext(), weather.tempString)
+        MySharedPreference.setIcon(requireContext(), resourceID)
     }
 
     override fun onPause() {
