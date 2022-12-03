@@ -385,37 +385,37 @@ class SaveFragment : BottomSheetDialogFragment() {
         })
     }
 
-    private fun getTagList(): List<String> {
-        val tagList = mutableListOf<String>()
+    private fun getTagList(): List<Long> {
+        val tagList = mutableListOf<Long>()
         if (binding.layoutEdit.chip1.isChecked) {
-            tagList.add(binding.layoutEdit.chip1.text.toString())
+            tagList.add(1)
         }
         if (binding.layoutEdit.chip2.isChecked) {
-            tagList.add(binding.layoutEdit.chip2.text.toString())
+            tagList.add(2)
         }
         if (binding.layoutEdit.chip3.isChecked) {
-            tagList.add(binding.layoutEdit.chip3.text.toString())
+            tagList.add(3)
         }
         if (binding.layoutEdit.chip4.isChecked) {
-            tagList.add(binding.layoutEdit.chip4.text.toString())
+            tagList.add(4)
         }
         if (binding.layoutEdit.chip5.isChecked) {
-            tagList.add(binding.layoutEdit.chip5.text.toString())
+            tagList.add(5)
         }
         if (binding.layoutEdit.chip6.isChecked) {
-            tagList.add(binding.layoutEdit.chip6.text.toString())
+            tagList.add(6)
         }
         if (binding.layoutEdit.chip7.isChecked) {
-            tagList.add(binding.layoutEdit.chip7.text.toString())
+            tagList.add(7)
         }
         if (binding.layoutEdit.chip8.isChecked) {
-            tagList.add(binding.layoutEdit.chip8.text.toString())
+            tagList.add(8)
         }
         if (binding.layoutEdit.chip9.isChecked) {
-            tagList.add(binding.layoutEdit.chip9.text.toString())
+            tagList.add(9)
         }
         if (binding.layoutEdit.chip10.isChecked) {
-            tagList.add(binding.layoutEdit.chip10.text.toString())
+            tagList.add(10)
         }
         return tagList
     }
