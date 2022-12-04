@@ -23,17 +23,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/et_min_temperature"
+        <TextView
+            android:id="@+id/tv_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:background="@android:color/transparent"
-            android:text="0˚"
+            android:text="0.0"
             android:textSize="22sp"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="@+id/cl_top_bar"
             app:layout_constraintRight_toLeftOf="@+id/tv_between" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="˚"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@+id/cl_top_bar"
+            app:layout_constraintLeft_toRightOf="@+id/tv_min" />
 
         <TextView
             android:id="@+id/tv_between"
@@ -42,22 +53,34 @@
             android:layout_marginHorizontal="5dp"
             android:text="~"
             android:textSize="24sp"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/cl_top_bar"
-            app:layout_constraintRight_toLeftOf="@+id/et_max_temperature" />
+            app:layout_constraintRight_toLeftOf="@+id/tv_max" />
 
-        <EditText
-            android:id="@+id/et_max_temperature"
+        <TextView
+            android:id="@+id/tv_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:layout_marginRight="8dp"
-            android:background="@android:color/transparent"
-            android:text="99˚"
+            android:layout_marginRight="15dp"
+            android:text="99.9"
             android:textSize="22sp"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="@+id/cl_top_bar"
             app:layout_constraintRight_toLeftOf="@+id/ic_search" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="˚"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@+id/cl_top_bar"
+            app:layout_constraintLeft_toRightOf="@+id/tv_max" />
 
         <ImageView
             android:id="@+id/ic_search"
@@ -70,16 +93,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_record"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:paddingBottom="90dp"
+        android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_top_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:spanCount="2"
         tools:itemCount="100"
         tools:listitem="@layout/item_search" />

@@ -12,7 +12,6 @@ class EventDecorator(dates: Collection<CalendarDay>, context: Activity?) : DayVi
     private var dates : HashSet<CalendarDay> = HashSet(dates)
 
     override fun shouldDecorate(day: CalendarDay): Boolean {
-//        return day == myDay
         return dates.contains(day)
     }
 

@@ -18,6 +18,7 @@ import com.example.opensource.databinding.FragmentRecordBinding
 import com.example.opensource.databinding.ViewUserRecordBinding
 import com.example.opensource.my_page.MyPageLikeFragment
 import com.example.opensource.my_page.MyPageRecordFragment
+import com.example.opensource.search.SearchFragment
 import com.example.opensource.util.setOnSinglePostClickListener
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,7 +56,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
 
     private fun getState() {
         state = this.tag!!
-        if (state == MyPageLikeFragment.TAG) {
+        if (state == MyPageLikeFragment.TAG || state == SearchFragment.TAG) {
             binding.tvModify.visibility = View.GONE
             setUserName()
             clickIvHeart()
@@ -118,7 +119,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         layout.rbStar.rating = recordData.stars.toFloat()
         setTag(layout, recordData.tags)
         layout.tvMemo.text = recordData.comment
-        layout.tvTemperature.text = recordData.temperature.toString()
+        layout.tvTemperature.text = recordData.temperature.toString() + "˚"
         layout.ivHeart.isSelected = recordData.heart
         setHeart()
     }
