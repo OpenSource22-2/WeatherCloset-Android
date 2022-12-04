@@ -7,7 +7,8 @@ data class CreateRecordRequest(
     val heart: Boolean,
     val imageUrl: String,
     val stars: Int,
+    @SerializedName("date")
     val recordDate: String,
-    @SerializedName("tags")
+    @SerializedName("tagIds")
     val tag: List<Long>,
 )

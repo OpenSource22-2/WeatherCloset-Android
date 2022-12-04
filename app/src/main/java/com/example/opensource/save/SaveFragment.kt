@@ -332,9 +332,9 @@ class SaveFragment : BottomSheetDialogFragment() {
             saveRecord()    // data 전송
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
+            hideProgressDialog()
+            dismiss()
         }
-        hideProgressDialog()
-        dismiss()
     }
 
     private fun initProgressDialog() {
@@ -382,10 +382,14 @@ class SaveFragment : BottomSheetDialogFragment() {
                 } else {
                     Log.e(TAG, "onResponse: $response")
                 }
+                hideProgressDialog()
+                dismiss()
             }
 
             override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: $t")
+                hideProgressDialog()
+                dismiss()
             }
         })
     }

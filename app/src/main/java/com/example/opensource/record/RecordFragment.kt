@@ -116,7 +116,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         Glide.with(this).load(recordData.imageUrl).into(layout.ivRecord)
         setIcon(layout, recordData.icon)
         layout.rbStar.rating = recordData.stars.toFloat()
-        setTag(layout, recordData.tag)
+        setTag(layout, recordData.tags)
         layout.tvMemo.text = recordData.comment
         layout.tvTemperature.text = recordData.temperature.toString()
         layout.ivHeart.isSelected = recordData.heart

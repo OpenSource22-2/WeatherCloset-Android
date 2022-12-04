@@ -12,9 +12,10 @@ data class RecordData(
     val stars: Int,
     val comment: String,
     val heart: Boolean,
+    @SerializedName("date")
     val recordDate: String,
     var temperature: Double,
     var icon: Int,
     @SerializedName("tags")
-    val tag: List<String>,
+    val tags: List<String>,
 ) : Parcelable

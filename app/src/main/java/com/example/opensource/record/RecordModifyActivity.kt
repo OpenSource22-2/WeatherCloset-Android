@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.opensource.MySharedPreference
 import com.example.opensource.R
-import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.BaseResponse
 import com.example.opensource.data.remote.CreateRecordRequest
@@ -32,6 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class RecordModifyActivity : AppCompatActivity() {
 
@@ -165,7 +165,7 @@ class RecordModifyActivity : AppCompatActivity() {
             layout.rbStar.rating = recordData?.stars?.toFloat() ?: 0f
             layout.rbStar.stepSize = 1f
             layout.etMemo.setText(recordData?.comment)
-            for (i in recordData?.tag!!) {
+            for (i in recordData?.tags!!) {
                 setTag(layout, i)
             }
             postUri = recordData?.imageUrl.toString()
@@ -440,7 +440,6 @@ class RecordModifyActivity : AppCompatActivity() {
                 Log.e(TAG, "onFailure: $t")
             }
         })
-        finish()
     }
 
     private fun getTagList(): List<Long> {

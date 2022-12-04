@@ -72,7 +72,13 @@ class HomeFragment : Fragment() {
 
     private fun setData() {
         val call: Call<HomeRecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.getRecordList(Secret.memberId)
+            RetrofitObject.provideWeatherClosetApi.getHomeRecordList(
+                MySharedPreference.getMemberId(
+                    requireContext()
+                ), MySharedPreference.getTemperature(
+                    requireContext()
+                ).toDouble()
+            )
 
         call.enqueue(object : Callback<HomeRecordResponse> {
             override fun onResponse(

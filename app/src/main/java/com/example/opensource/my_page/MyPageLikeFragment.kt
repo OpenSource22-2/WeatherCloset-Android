@@ -51,7 +51,7 @@ class MyPageLikeFragment : Fragment() {
 
     private fun setData() {
         val call: Call<HomeRecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.getLikeRecordList(
+            RetrofitObject.provideWeatherClosetApi.getRecordList(   // TODO: 좋아요 api로 변경
                 MySharedPreference.getMemberId(
                     requireContext()
                 )
