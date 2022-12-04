@@ -119,7 +119,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         layout.rbStar.rating = recordData.stars.toFloat()
         setTag(layout, recordData.tags)
         layout.tvMemo.text = recordData.comment
-        layout.tvTemperature.text = recordData.temperature.toString()
+        layout.tvTemperature.text = recordData.temperature.toString() + "˚"
         layout.ivHeart.isSelected = recordData.heart
         setHeart()
     }

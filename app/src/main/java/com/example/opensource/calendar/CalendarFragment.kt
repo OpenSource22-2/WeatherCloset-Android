@@ -112,7 +112,7 @@ class CalendarFragment : Fragment() {
             .fitCenter()
             .into(binding.userDailyRecord.ivRecord)
         setIcon(binding.userDailyRecord, recordData.icon)
-        binding.userDailyRecord.tvTemperature.text = recordData.temperature.toString()
+        binding.userDailyRecord.tvTemperature.text = recordData.temperature.toString() + "˚"
         binding.userDailyRecord.rbStar.rating = recordData.stars.toFloat()
         setTag(binding.userDailyRecord, recordData.tags)
         binding.userDailyRecord.tvMemo.text = recordData.comment

@@ -38,7 +38,7 @@ class SearchRecordRvAdapter(private val context: Context):
                 .load(data.imageUrl)
                 .into(binding.ivClothes)
             binding.tvDate.text = data.recordData
-            binding.tvTemperature.text = data.temperature.toString()
+            binding.tvTemperature.text = data.temperature.toString() + "˚"
             if (data.heart)
                 binding.ivHeart.setImageResource(R.drawable.heart_white_line)
             else
