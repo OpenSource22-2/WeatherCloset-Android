@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="10dp">
@@ -13,16 +12,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
-
-<!--        <TextView
-            android:id="@+id/tv_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="온도 설정"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>-->
 
         <NumberPicker
             android:id="@+id/np_first"
@@ -38,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:text="."
             android:textSize="30dp"
             android:textColor="@color/black"
@@ -50,10 +39,11 @@
             android:theme="@style/NumberPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:descendantFocusability="blocksDescendants"
             app:layout_constraintStart_toEndOf="@+id/tv_dot"
             app:layout_constraintTop_toTopOf="@+id/np_first"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -65,22 +55,24 @@
         app:layout_constraintTop_toBottomOf="@+id/cl_setting">
 
         <Button
-            android:id="@+id/bt_ok"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:background="#00000000"
-            android:text="확인"
-            android:textColor="@color/black" />
-
-        <Button
             android:id="@+id/bt_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:background="#00000000"
-            android:text="취소"
-            android:textColor="#FF4444" />
+            android:text="CANCEL"
+            android:textSize="12dp"
+            android:textColor="@color/main_blue" />
+
+        <Button
+            android:id="@+id/bt_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="#00000000"
+            android:text="OK"
+            android:textSize="12dp"
+            android:textColor="@color/main_blue" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

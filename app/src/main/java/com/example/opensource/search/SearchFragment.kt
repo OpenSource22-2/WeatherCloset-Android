@@ -9,9 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.opensource.MainActivity
 import com.example.opensource.data.RetrofitObject
+import com.example.opensource.data.remote.RecordResponse
 import com.example.opensource.data.remote.SearchRecordResponse
 import com.example.opensource.databinding.FragmentSearchBinding
-import com.example.opensource.home.HomeFragment.Companion.TAG
+import com.example.opensource.home.HomeFragment
+import com.example.opensource.home.HomeRecordRvAdapter
+import com.example.opensource.my_page.MyPageLikeFragment
+import com.example.opensource.record.RecordFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,8 +26,16 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var recordRvAdapter: SearchRecordRvAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    companion object {
+        const val TAG = "SEARCH_FRAGMENT"
+        const val MIN = 0.0
+        const val MAX = 99.9
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(MyPageLikeFragment.TAG, "onStart: ")
+        setData(MIN, MAX)
     }
 
     override fun onCreateView(
@@ -33,7 +45,6 @@ class SearchFragment : Fragment() {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         setNumberPicker()
-        //getRecordList()
         return binding.root
     }
 
@@ -47,7 +58,9 @@ class SearchFragment : Fragment() {
                 response: Response<SearchRecordResponse>
             ) {
                 if (response.isSuccessful) {
-                    initAdapter(response.body()?.data!!)
+                    val sortedData = response.body()?.data!!
+                    sortedData.sortWith(compareByDescending<SearchRecordResponse.SearchRecordData> {it.recordData}.thenBy {!it.heart})
+                    initAdapter(sortedData)
                 } else {
                     //Log.e(SearchFragment.TAG, "onResponse: response error: $response")
                 }
@@ -64,16 +77,47 @@ class SearchFragment : Fragment() {
         recordRvAdapter.addItems(data)
         recordRvAdapter.notifyDataSetChanged()
         binding.rvRecord.adapter = recordRvAdapter
+        clickRecordItemView()
+    }
 
-        if(recordRvAdapter.recordList.isEmpty())
-            binding.clBack.visibility = View.VISIBLE
-        else
-            binding.clBack.visibility = View.INVISIBLE
+    private fun clickRecordItemView() {
+        recordRvAdapter.setItemClickListener(object :
+            SearchRecordRvAdapter.OnItemClickListener {
+            override fun onItemClick(v: View, position: Int) {
+                // 기록 단건 조회
+                val recordId = recordRvAdapter.recordList[position].id
+                getRecordInfo(recordId)
+            }
+        })
+    }
+
+    fun getRecordInfo(recordId: Int) {
+        val call: Call<RecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.getRecord(recordId)
+
+        call.enqueue(object : Callback<RecordResponse> {
+            override fun onResponse(
+                call: Call<RecordResponse>,
+                response: Response<RecordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.d(HomeFragment.TAG, "onResponse: ${response.body()}")
+                    val recordData = response.body()?.data!!
+                    // show dialog
+                    val dialog = RecordFragment(recordData)
+                    dialog.show(childFragmentManager, TAG)
+                } else {
+                    Log.e(HomeFragment.TAG, "onResponse: response error: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+            }
+        })
     }
 
     private fun setNumberPicker(){
-
-        binding.clBack.visibility = View.VISIBLE
 
         var activity =  getActivity() as MainActivity
 
@@ -108,14 +152,6 @@ class SearchFragment : Fragment() {
                 Toast.makeText(requireContext(), "범위를 확인해주세요.", Toast.LENGTH_SHORT).show()
             else{
                 setData(minT, maxT)
-/*                // 범위 설정
-                val selectedData = data
-                selectedData.removeIf{n: SearchRecordResponse.SearchRecordData
-                                        -> (n.temperature < minT || n.temperature > maxT)}
-                // 최신순으로 정렬
-                selectedData.sortWith(compareByDescending<SearchRecordResponse.SearchRecordData> {it.recordData}.thenBy {!it.heart})
-                // 데이터 불러오기
-                initAdapter(selectedData)*/
             }
         }
     }

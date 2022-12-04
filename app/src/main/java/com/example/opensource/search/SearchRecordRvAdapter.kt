@@ -3,17 +3,28 @@ package com.example.opensource.search
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.opensource.R
 import com.example.opensource.data.remote.SearchRecordResponse
 import com.example.opensource.databinding.ItemSearchBinding
+import com.example.opensource.home.HomeRecordRvAdapter
 
 class SearchRecordRvAdapter(private val context: Context):
     RecyclerView.Adapter<SearchRecordRvAdapter.SearchRecordViewHolder>() {
 
     var recordList = mutableListOf<SearchRecordResponse.SearchRecordData>()
+    private lateinit var itemClickListener: OnItemClickListener
+
+    interface OnItemClickListener {
+        fun onItemClick(v: View, position: Int)
+    }
+
+    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
+        this.itemClickListener = onItemClickListener
+    }
 
     fun addItems(data: List<SearchRecordResponse.SearchRecordData>) {
         this.recordList.addAll(data)
@@ -27,11 +38,14 @@ class SearchRecordRvAdapter(private val context: Context):
                 .load(data.imageUrl)
                 .into(binding.ivClothes)
             binding.tvDate.text = data.recordData
-            binding.tvTemperature.text = data.temperature.toString() + "˚"
+            binding.tvTemperature.text = data.temperature.toString()
             if (data.heart)
                 binding.ivHeart.setImageResource(R.drawable.heart_white_line)
             else
                 binding.ivHeart.setImageResource(R.drawable.heart_empty)
+            binding.root.setOnClickListener {
+                itemClickListener.onItemClick(it, adapterPosition)
+            }
         }
     }
 
