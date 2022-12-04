@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isInvisible
 import com.example.opensource.MainActivity
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.RecordResponse
@@ -59,8 +60,15 @@ class SearchFragment : Fragment() {
             ) {
                 if (response.isSuccessful) {
                     val sortedData = response.body()?.data!!
-                    sortedData.sortWith(compareByDescending<SearchRecordResponse.SearchRecordData> {it.recordData}.thenBy {!it.heart})
+                    sortedData.sortWith(compareByDescending<SearchRecordResponse.SearchRecordData> { it.recordData }.thenBy { !it.heart })
                     initAdapter(sortedData)
+
+                    if(sortedData.size==0){
+                        binding.clBack.visibility = View.VISIBLE
+                    }
+                    else {
+                        binding.clBack.visibility = View.INVISIBLE
+                    }
                 } else {
                     //Log.e(SearchFragment.TAG, "onResponse: response error: $response")
                 }
