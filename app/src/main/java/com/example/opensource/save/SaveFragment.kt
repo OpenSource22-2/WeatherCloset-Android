@@ -18,11 +18,12 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.opensource.MySharedPreference
 import com.example.opensource.R
-import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.CreateRecordRequest
 import com.example.opensource.data.remote.RecordResponse
 import com.example.opensource.databinding.FragmentSaveBinding
+import com.example.opensource.home.HomeFragment
+import com.example.opensource.my_page.MyPageFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -106,9 +107,9 @@ class SaveFragment : BottomSheetDialogFragment() {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    recordDate = if (month < 10 && dayOfMonth < 10) {
+                    recordDate = if (month < 9 && dayOfMonth < 10) {
                         "$year. 0${month + 1}. 0$dayOfMonth"
-                    } else if (month < 10) {
+                    } else if (month < 9) {
                         "$year. 0${month + 1}. $dayOfMonth"
                     } else if (dayOfMonth < 10) {
                         "$year. ${month + 1}. 0$dayOfMonth"
@@ -381,6 +382,11 @@ class SaveFragment : BottomSheetDialogFragment() {
                     Log.d(TAG, "onResponse: success : ${response.body()}")
                 } else {
                     Log.e(TAG, "onResponse: $response")
+                }
+                if (requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0] is HomeFragment) {
+                    requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0].onStart()
+                } else if (requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0] is MyPageFragment) {
+                    requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0].childFragmentManager.fragments[0].onStart()
                 }
                 hideProgressDialog()
                 dismiss()

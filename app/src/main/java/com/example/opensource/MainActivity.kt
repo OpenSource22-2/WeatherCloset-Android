@@ -1,8 +1,6 @@
 package com.example.opensource
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -42,14 +40,6 @@ class MainActivity : AppCompatActivity() {
         binding.fabSave.setOnClickListener {
             val dialog = SaveFragment()
             dialog.show(supportFragmentManager, "save")
-            fragmentManager.executePendingTransactions()
-
-            dialog.dialog?.setOnDismissListener(DialogInterface.OnDismissListener {
-                Log.d("MAIN_ACTIVITY", "setListeners: ")
-//                navController.navigate(R.id.navigation_home)
-                // set onStart() in HomeFragment
-                navHostFragment.onStart()
-            })
         }
     }
 }

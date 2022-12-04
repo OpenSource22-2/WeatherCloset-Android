@@ -440,6 +440,7 @@ class RecordModifyActivity : AppCompatActivity() {
                 Log.e(TAG, "onFailure: $t")
             }
         })
+        finish()
     }
 
     private fun getTagList(): List<Long> {
