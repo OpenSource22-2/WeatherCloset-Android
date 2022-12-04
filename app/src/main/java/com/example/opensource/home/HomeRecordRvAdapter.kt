@@ -40,7 +40,6 @@ class HomeRecordRvAdapter(private val context: Context) :
                 binding.ivHeart.setImageResource(R.drawable.heart_white_line)
             else
                 binding.ivHeart.setImageResource(R.drawable.heart_empty)
-
             binding.root.setOnClickListener {
                 itemClickListener.onItemClick(it, adapterPosition)
             }

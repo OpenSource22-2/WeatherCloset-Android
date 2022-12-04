@@ -16,12 +16,14 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.example.opensource.MySharedPreference
 import com.example.opensource.R
-import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
-import com.example.opensource.data.remote.BaseResponse
 import com.example.opensource.data.remote.CreateRecordRequest
+import com.example.opensource.data.remote.RecordResponse
 import com.example.opensource.databinding.FragmentSaveBinding
+import com.example.opensource.home.HomeFragment
+import com.example.opensource.my_page.MyPageFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -105,7 +107,15 @@ class SaveFragment : BottomSheetDialogFragment() {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    recordDate = "$year. ${month + 1}. $dayOfMonth"
+                    recordDate = if (month < 9 && dayOfMonth < 10) {
+                        "$year. 0${month + 1}. 0$dayOfMonth"
+                    } else if (month < 9) {
+                        "$year. 0${month + 1}. $dayOfMonth"
+                    } else if (dayOfMonth < 10) {
+                        "$year. ${month + 1}. 0$dayOfMonth"
+                    } else {
+                        "$year. ${month + 1}. $dayOfMonth"
+                    }
                     binding.layoutEdit.tvSelectDate.text = recordDate
                 }
             val datePickerDialog = DatePickerDialog(
@@ -323,9 +333,9 @@ class SaveFragment : BottomSheetDialogFragment() {
             saveRecord()    // data 전송
         }.addOnFailureListener { // uri 다운로드 실패 시 동작
             Log.d(TAG, "onFailure: download")
+            hideProgressDialog()
+            dismiss()
         }
-        hideProgressDialog()
-        dismiss()
     }
 
     private fun initProgressDialog() {
@@ -352,61 +362,75 @@ class SaveFragment : BottomSheetDialogFragment() {
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
             recordDate = recordDate,
-//            tag = getTagList(),
+            tag = getTagList(),
         )
 
-        val call: Call<BaseResponse> =
-            RetrofitObject.provideWeatherClosetApi.createRecord(Secret.memberId, requestRecordData)
+        Log.d(TAG, "saveRecord: requestRecordData: $requestRecordData")
+        val call: Call<RecordResponse> =
+            RetrofitObject.provideWeatherClosetApi.createRecord(
+                MySharedPreference.getMemberId(
+                    requireContext()
+                ), requestRecordData
+            )
 
-        call.enqueue(object : Callback<BaseResponse> {
+        call.enqueue(object : Callback<RecordResponse> {
             override fun onResponse(
-                call: Call<BaseResponse>,
-                response: Response<BaseResponse>
+                call: Call<RecordResponse>,
+                response: Response<RecordResponse>
             ) {
                 if (response.isSuccessful) {
                     Log.d(TAG, "onResponse: success : ${response.body()}")
                 } else {
                     Log.e(TAG, "onResponse: $response")
                 }
+                if (requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0] is HomeFragment) {
+                    requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0].onStart()
+                } else if (requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0] is MyPageFragment) {
+                    requireActivity().supportFragmentManager.fragments[0].childFragmentManager.fragments[0].childFragmentManager.fragments[0].onStart()
+                }
+                hideProgressDialog()
+                dismiss()
             }
 
-            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+            override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: $t")
+                hideProgressDialog()
+                dismiss()
             }
         })
     }
 
-    private fun getTagList(): List<String> {
-        val tagList = mutableListOf<String>()
+    private fun getTagList(): List<Long> {
+        val tagList = mutableListOf<Long>()
         if (binding.layoutEdit.chip1.isChecked) {
-            tagList.add(binding.layoutEdit.chip1.text.toString())
+            tagList.add(1)
         }
         if (binding.layoutEdit.chip2.isChecked) {
-            tagList.add(binding.layoutEdit.chip2.text.toString())
+            tagList.add(2)
         }
         if (binding.layoutEdit.chip3.isChecked) {
-            tagList.add(binding.layoutEdit.chip3.text.toString())
+            tagList.add(3)
         }
         if (binding.layoutEdit.chip4.isChecked) {
-            tagList.add(binding.layoutEdit.chip4.text.toString())
+            tagList.add(4)
         }
         if (binding.layoutEdit.chip5.isChecked) {
-            tagList.add(binding.layoutEdit.chip5.text.toString())
+            tagList.add(5)
         }
         if (binding.layoutEdit.chip6.isChecked) {
-            tagList.add(binding.layoutEdit.chip6.text.toString())
+            tagList.add(6)
         }
         if (binding.layoutEdit.chip7.isChecked) {
-            tagList.add(binding.layoutEdit.chip7.text.toString())
+            tagList.add(7)
         }
         if (binding.layoutEdit.chip8.isChecked) {
-            tagList.add(binding.layoutEdit.chip8.text.toString())
+            tagList.add(8)
         }
         if (binding.layoutEdit.chip9.isChecked) {
-            tagList.add(binding.layoutEdit.chip9.text.toString())
+            tagList.add(9)
         }
         if (binding.layoutEdit.chip10.isChecked) {
-            tagList.add(binding.layoutEdit.chip10.text.toString())
+            tagList.add(10)
         }
         return tagList
     }

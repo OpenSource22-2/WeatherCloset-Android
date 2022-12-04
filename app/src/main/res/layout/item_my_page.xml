@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/iv_clothes"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
+        android:layout_width="160dp"
+        android:layout_height="210dp"
         android:scaleType="fitXY"
         android:src="@drawable/dummy_item_home"
         app:layout_constraintStart_toStartOf="parent"

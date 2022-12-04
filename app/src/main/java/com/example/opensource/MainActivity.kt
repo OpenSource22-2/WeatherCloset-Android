@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
     private fun setListeners() {
         binding.fabSave.bringToFront()
         binding.fabSave.setOnClickListener {
-            SaveFragment().show(supportFragmentManager, "save")
+            val dialog = SaveFragment()
+            dialog.show(supportFragmentManager, "save")
         }
     }
 }

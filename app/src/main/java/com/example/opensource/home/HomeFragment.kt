@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.example.opensource.MySharedPreference
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
@@ -54,7 +55,6 @@ class HomeFragment : Fragment() {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-//      TODO: initPopUp()
         return binding.root
     }
 
@@ -72,7 +72,13 @@ class HomeFragment : Fragment() {
 
     private fun setData() {
         val call: Call<HomeRecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.getRecordList(Secret.memberId)
+            RetrofitObject.provideWeatherClosetApi.getHomeRecordList(
+                MySharedPreference.getMemberId(
+                    requireContext()
+                ), MySharedPreference.getTemperature(
+                    requireContext()
+                ).toDouble()
+            )
 
         call.enqueue(object : Callback<HomeRecordResponse> {
             override fun onResponse(
@@ -206,11 +212,16 @@ class HomeFragment : Fragment() {
 
     private fun updateWeather(weather: WeatherData) {
         binding.tvTemperature.text = weather.tempString + "ºC"
-        val resourceID = resources.getIdentifier(weather.icon, "drawable", activity?.packageName)
+        val resourceID =
+            resources.getIdentifier(weather.icon, "drawable", activity?.packageName)
         binding.ivWeather.setImageResource(resourceID)
         val mFormat = SimpleDateFormat("yyyy. MM. dd")
         val mDate = System.currentTimeMillis()
         binding.tvTodayDate.text = mFormat.format(mDate).toString()
+
+        MySharedPreference.setTemperature(requireContext(), weather.tempString)
+        MySharedPreference.setIcon(requireContext(), resourceID)
+        binding.tvPopup.text = weather.popUpText
     }
 
     override fun onPause() {
