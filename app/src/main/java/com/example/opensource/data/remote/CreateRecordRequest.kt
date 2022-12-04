@@ -1,10 +1,13 @@
 package com.example.opensource.data.remote
 
+import com.google.gson.annotations.SerializedName
+
 data class CreateRecordRequest(
     val comment: String,
     val heart: Boolean,
     val imageUrl: String,
     val stars: Int,
     val recordDate: String,
-//    val tag: List<Long>,    // TODO: 태그 추가 기능 추가
+    @SerializedName("tags")
+    val tag: List<Long>,
 )

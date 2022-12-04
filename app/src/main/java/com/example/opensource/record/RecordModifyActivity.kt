@@ -13,7 +13,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.opensource.MySharedPreference
 import com.example.opensource.R
+import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.BaseResponse
 import com.example.opensource.data.remote.CreateRecordRequest
@@ -163,9 +165,9 @@ class RecordModifyActivity : AppCompatActivity() {
             layout.rbStar.rating = recordData?.stars?.toFloat() ?: 0f
             layout.rbStar.stepSize = 1f
             layout.etMemo.setText(recordData?.comment)
-//            for (i in recordData?.tag!!) {    // TODO: 태그 불러오기
-//                setTag(layout, i)
-//            }
+            for (i in recordData?.tag!!) {
+                setTag(layout, i)
+            }
             postUri = recordData?.imageUrl.toString()
             recordDate = recordData?.recordDate.toString()
             setHeart(recordData?.heart)
@@ -410,11 +412,17 @@ class RecordModifyActivity : AppCompatActivity() {
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
             recordDate = recordDate,
-//            tag = getTagList()
+            tag = getTagList()
         )
 
+        Log.d(TAG, "saveRecord: $requestRecordData")
+
         val call: Call<BaseResponse> =
-            RetrofitObject.provideWeatherClosetApi.updateRecord(recordId, requestRecordData)
+            RetrofitObject.provideWeatherClosetApi.updateRecord(
+                MySharedPreference.getMemberId(this),
+                recordId,
+                requestRecordData
+            )
 
         call.enqueue(object : Callback<BaseResponse> {
             override fun onResponse(
@@ -433,5 +441,40 @@ class RecordModifyActivity : AppCompatActivity() {
             }
         })
         finish()
+    }
+
+    private fun getTagList(): List<Long> {
+        val tagList = mutableListOf<Long>()
+        if (binding.layoutEdit.chip1.isChecked) {
+            tagList.add(1)
+        }
+        if (binding.layoutEdit.chip2.isChecked) {
+            tagList.add(2)
+        }
+        if (binding.layoutEdit.chip3.isChecked) {
+            tagList.add(3)
+        }
+        if (binding.layoutEdit.chip4.isChecked) {
+            tagList.add(4)
+        }
+        if (binding.layoutEdit.chip5.isChecked) {
+            tagList.add(5)
+        }
+        if (binding.layoutEdit.chip6.isChecked) {
+            tagList.add(6)
+        }
+        if (binding.layoutEdit.chip7.isChecked) {
+            tagList.add(7)
+        }
+        if (binding.layoutEdit.chip8.isChecked) {
+            tagList.add(8)
+        }
+        if (binding.layoutEdit.chip9.isChecked) {
+            tagList.add(9)
+        }
+        if (binding.layoutEdit.chip10.isChecked) {
+            tagList.add(10)
+        }
+        return tagList
     }
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.opensource.R
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
@@ -57,7 +56,7 @@ class MyPageRecordFragment : Fragment() {
                     initAdapter(recordList)
                     binding.rvRecord.adapter = recordRvAdapter
                 } else {
-                    Log.e(TAG, "onResponse: response error: $response", )
+                    Log.e(TAG, "onResponse: response error: $response")
                 }
             }
 

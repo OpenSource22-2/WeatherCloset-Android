@@ -26,8 +26,9 @@ interface WeatherClosetApi {
 
     // 기록 수정
     @Headers("Content-type:application/json")
-    @PUT("record/{recordId}")
+    @PUT("record/{memberId}/{recordId}")
     fun updateRecord(
+        @Path("memberId") memberId: Int,
         @Path("recordId") recordId: Int,
         @Body body: CreateRecordRequest
     ): Call<BaseResponse>
@@ -46,12 +47,19 @@ interface WeatherClosetApi {
         @Path("recordId") recordId: Int
     ): Call<BaseResponse>
 
-    // 좋아요
+    // 좋아요 수정
     @Headers("Content-type:application/json")
-    @PUT("record/like/{recordId}")
+    @PUT("record/like/{memberId}/{recordId}")
     fun likeRecord(
+        @Path("memberId") memberId: Int,
         @Path("recordId") recordId: Int,
         @Body body: Boolean
     ): Call<BaseResponse>
 
+    // 좋아요 기록 조회
+    @Headers("Content-type:application/json")
+    @GET("heart/{memberId}")
+    fun getLikeRecordList(
+        @Path("memberId") memberId: Int
+    ): Call<HomeRecordResponse>
 }

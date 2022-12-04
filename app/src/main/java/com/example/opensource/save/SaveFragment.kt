@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.example.opensource.MySharedPreference
 import com.example.opensource.R
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
@@ -360,12 +361,16 @@ class SaveFragment : BottomSheetDialogFragment() {
             imageUrl = postUri,
             stars = binding.layoutEdit.rbStar.rating.toInt(),
             recordDate = recordDate,
-//            tag = getTagList(),
+            tag = getTagList(),
         )
 
         Log.d(TAG, "saveRecord: requestRecordData: $requestRecordData")
         val call: Call<RecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.createRecord(Secret.memberId, requestRecordData)
+            RetrofitObject.provideWeatherClosetApi.createRecord(
+                MySharedPreference.getMemberId(
+                    requireContext()
+                ), requestRecordData
+            )
 
         call.enqueue(object : Callback<RecordResponse> {
             override fun onResponse(

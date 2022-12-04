@@ -73,6 +73,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
 
     private fun modifyHeart(heart: Boolean) {
         val call = RetrofitObject.provideWeatherClosetApi.likeRecord(
+            memberId = MySharedPreference.getMemberId(requireContext()),
             recordId = recordData.id,
             body = heart
         )
@@ -115,7 +116,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         Glide.with(this).load(recordData.imageUrl).into(layout.ivRecord)
         setIcon(layout, recordData.icon)
         layout.rbStar.rating = recordData.stars.toFloat()
-//        setTag(layout, recordData.tag) // TODO: tag
+        setTag(layout, recordData.tag)
         layout.tvMemo.text = recordData.comment
         layout.tvTemperature.text = recordData.temperature.toString()
         layout.ivHeart.isSelected = recordData.heart

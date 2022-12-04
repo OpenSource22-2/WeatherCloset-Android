@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.opensource.MySharedPreference
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
@@ -50,7 +51,11 @@ class MyPageLikeFragment : Fragment() {
 
     private fun setData() {
         val call: Call<HomeRecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.getRecordList(Secret.memberId)
+            RetrofitObject.provideWeatherClosetApi.getLikeRecordList(
+                MySharedPreference.getMemberId(
+                    requireContext()
+                )
+            )
 
         call.enqueue(object : Callback<HomeRecordResponse> {
             override fun onResponse(
@@ -114,68 +119,4 @@ class MyPageLikeFragment : Fragment() {
             }
         })
     }
-
-//    private fun getRecordList() {
-//        val data = ArrayList<MyPageLikeResponse.MyPageLikeData>()
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        data.add(
-//            MyPageLikeResponse.MyPageLikeData(
-//                imageUrl = "https://firebasestorage.googleapis.com/v0/b/weathercloset-78954.appspot.com/o/item%2FIMAGE_20221118_150512_.png?alt=media&token=df1d84f8-c328-4464-a84e-1ce3e08ed44c",
-//                heart = true,
-//                createdAt = "2022-11-24",
-//                id = 1
-//            )
-//        )
-//        recordRvAdapter = MyPageLikeRvAdapter(requireContext())
-//        recordRvAdapter.addItems(data)
-//        recordRvAdapter.notifyDataSetChanged()
-//        binding.rvLike.adapter = recordRvAdapter
-//    }
 }
