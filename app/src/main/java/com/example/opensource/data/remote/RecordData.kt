@@ -1,6 +1,7 @@
 package com.example.opensource.data.remote
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -11,8 +12,10 @@ data class RecordData(
     val stars: Int,
     val comment: String,
     val heart: Boolean,
+    @SerializedName("date")
     val recordDate: String,
-    val temperature: Double,
-    val icon: Int,
-//    val tag: List<String>,    // TODO: tag
+    var temperature: Double,
+    var icon: Int,
+    @SerializedName("tags")
+    val tags: List<String>,
 ) : Parcelable

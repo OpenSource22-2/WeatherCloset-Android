@@ -5,14 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.opensource.MySharedPreference
 import com.example.opensource.Secret
 import com.example.opensource.data.RetrofitObject
 import com.example.opensource.data.remote.HomeRecordResponse
 import com.example.opensource.data.remote.RecordResponse
-import com.example.opensource.databinding.FragmentMyPageLikeBinding
+import com.example.opensource.databinding.FragmentMyPageRecordBinding
 import com.example.opensource.home.HomeFragment
 import com.example.opensource.home.HomeRecordRvAdapter
 import com.example.opensource.record.RecordFragment
@@ -21,41 +19,32 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-class MyPageLikeFragment : Fragment() {
-    private lateinit var binding: FragmentMyPageLikeBinding
+class MyPageRecordFragment : Fragment() {
+    private lateinit var binding: FragmentMyPageRecordBinding
     private lateinit var recordRvAdapter: HomeRecordRvAdapter
 
     companion object {
-        const val TAG = "MY_PAGE_LIKE_FRAGMENT"
+        const val TAG = "USER_RECORD_FRAGMENT"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentMyPageRecordBinding.inflate(inflater, container, false)
 
-        binding = FragmentMyPageLikeBinding.inflate(inflater, container, false)
-
-//        getRecordList() // dummy
-//        clickItemView()
-        binding.rvLike.addItemDecoration(GridSpacingItemDecoration(2, 15, true))
+        binding.rvRecord.addItemDecoration(GridSpacingItemDecoration(2, 15, true))
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart: ")
         setData()
     }
 
     private fun setData() {
         val call: Call<HomeRecordResponse> =
-            RetrofitObject.provideWeatherClosetApi.getRecordList(   // TODO: 좋아요 api로 변경
-                MySharedPreference.getMemberId(
-                    requireContext()
-                )
-            )
+            RetrofitObject.provideWeatherClosetApi.getRecordList(Secret.memberId)
 
         call.enqueue(object : Callback<HomeRecordResponse> {
             override fun onResponse(
@@ -63,14 +52,16 @@ class MyPageLikeFragment : Fragment() {
                 response: Response<HomeRecordResponse>
             ) {
                 if (response.isSuccessful) {
-                    initAdapter(response.body()?.data!!)
+                    val recordList = response.body()?.data!!
+                    initAdapter(recordList)
+                    binding.rvRecord.adapter = recordRvAdapter
                 } else {
-                    Log.e(HomeFragment.TAG, "onResponse: response error: $response")
+                    Log.e(TAG, "onResponse: response error: $response")
                 }
             }
 
             override fun onFailure(call: Call<HomeRecordResponse>, t: Throwable) {
-                Log.d(HomeFragment.TAG, "onFailure: $t")
+                Log.d(TAG, "onFailure: ${t.message}")
             }
         })
     }
@@ -79,7 +70,7 @@ class MyPageLikeFragment : Fragment() {
         recordRvAdapter = HomeRecordRvAdapter(requireContext())
         recordRvAdapter.addItems(data)
         recordRvAdapter.notifyDataSetChanged()
-        binding.rvLike.adapter = recordRvAdapter
+        binding.rvRecord.adapter = recordRvAdapter
         clickRecordItemView()
     }
 
@@ -115,7 +106,7 @@ class MyPageLikeFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<RecordResponse>, t: Throwable) {
-                Log.d(TAG, "onFailure: $t")
+                Log.d(MyPageLikeFragment.TAG, "onFailure: $t")
             }
         })
     }
