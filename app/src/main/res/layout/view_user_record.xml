@@ -118,7 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="김익수님의 체감 기온"
+        android:text="최유빈님의 체감 기온"
         android:textColor="@color/text_gray"
         android:textSize="14sp"
         android:textStyle="bold"
