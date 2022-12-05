@@ -431,16 +431,18 @@ class RecordModifyActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     Log.d(TAG, "onResponse: success : ${response.body()}")
+                    finish()
                 } else {
                     Log.e(TAG, "onResponse: $response")
+                    finish()
                 }
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: $t")
+                finish()
             }
         })
-        finish()
     }
 
     private fun getTagList(): List<Long> {

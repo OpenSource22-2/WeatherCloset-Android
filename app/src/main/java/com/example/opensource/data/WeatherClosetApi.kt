@@ -16,7 +16,7 @@ interface WeatherClosetApi {
 
     // 홈 화면 기록 조회
     @Headers("Content-type:application/json")
-    @GET("home/{memberId}")
+    @GET("member/temperature/{memberId}")
     fun getHomeRecordList(
         @Path("memberId") memberId: Int,
         @Query("temperature") temperature: Double
@@ -78,10 +78,10 @@ interface WeatherClosetApi {
         @Body body: Boolean
     ): Call<BaseResponse>
 
-//    // 좋아요 기록 조회
-//    @Headers("Content-type:application/json")
-//    @GET("heart/{memberId}")
-//    fun getLikeRecordList(
-//        @Path("memberId") memberId: Int
-//    ): Call<HomeRecordResponse>
+    // 좋아요 기록 조회
+    @Headers("Content-type:application/json")
+    @GET("member/heart/{memberId}")
+    fun getLikeRecordList(
+        @Path("memberId") memberId: Int
+    ): Call<HomeRecordResponse>
 }

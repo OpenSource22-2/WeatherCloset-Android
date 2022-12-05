@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="14sp"
         android:layout_marginTop="18sp"
-        android:text="최유빈님의 마이페이지"
+        android:text= "최유빈님의 마이페이지"
         android:textColor="@color/gray_5"
         android:textSize="20sp"
         android:textStyle="bold"
