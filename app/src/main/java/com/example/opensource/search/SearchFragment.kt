@@ -29,14 +29,15 @@ class SearchFragment : Fragment() {
 
     companion object {
         const val TAG = "SEARCH_FRAGMENT"
-        const val MIN = 0.0
-        const val MAX = 99.9
+//        const val MIN = 0.0
+//        const val MAX = 99.9
     }
 
     override fun onStart() {
         super.onStart()
         Log.d(MyPageLikeFragment.TAG, "onStart: ")
-        setData(MIN, MAX)
+        setData(binding.tvMin.text.toString().toDouble()
+                , binding.tvMax.text.toString().toDouble())
     }
 
     override fun onCreateView(
