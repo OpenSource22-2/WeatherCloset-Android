@@ -117,6 +117,7 @@ class RecordFragment(private val recordData: RecordData) : DialogFragment() {
         Glide.with(this).load(recordData.imageUrl).into(layout.ivRecord)
         setIcon(layout, recordData.icon)
         layout.rbStar.rating = recordData.stars.toFloat()
+        layout.tvUserTemperature.text = recordData.username + "님의 체감 온도"
         // rating bar tint
         layout.rbStar.isEnabled = false
         layout.rbStar.isClickable = false
